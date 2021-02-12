@@ -9,7 +9,7 @@ RUN npm ci
 # installed.
 COPY src ./src
 COPY public ./public
-COPY ./tsconfig.json .
+COPY tsconfig.json .eslintrc.js ./
 EXPOSE 3000
 
 CMD ["npm", "start"]
