@@ -1,6 +1,8 @@
+// Inspired by a very helpful blog post:
+//     https://taylor.callsen.me/using-openlayers-with-react-functional-components/
+
 import { useState, useEffect, useRef } from 'react';
 
-// openlayers
 import Map from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
@@ -11,6 +13,7 @@ import {transform} from 'ol/proj'
 import {toStringXY} from 'ol/coordinate';
 import type {Layer} from 'ol/layer'
 import type {Coordinate} from 'ol/coordinate';  
+
 
 interface IMapWrapperProps {
   features: Array<any>;
@@ -57,15 +60,10 @@ function MapWrapper(props: IMapWrapperProps) {
 
     setMap(initialMap)
     setFeaturesLayer(initialFeaturesLayer)
-
-    // TODO: Forbid console.log
-    console.log('initialized');
-
   }, [])
 
   // Update on state change
   useEffect(() => {
-
     if (
       map == undefined
       || featuresLayer == undefined
