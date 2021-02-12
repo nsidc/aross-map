@@ -80,8 +80,10 @@ function MapWrapper(props: IMapWrapperProps) {
     )
 
     map.getView().fit(
-      // @ts-ignore TS2339 -- are the typedefs wrong?
+      /* eslint-disable @typescript-eslint/no-unsafe-call */
+      // @ts-ignore TS2339
       featuresLayer.getSource().getExtent(),
+      /* eslint-enable @typescript-eslint/no-unsafe-call */
       {padding: [100, 100, 100, 100]}
     )
 
@@ -94,6 +96,7 @@ function MapWrapper(props: IMapWrapperProps) {
       return;
     }
     
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const clickedCoord = mapRef.current.getCoordinateFromPixel(event.pixel);
     const transormedCoord = transform(clickedCoord, 'EPSG:3857', 'EPSG:4326')
 

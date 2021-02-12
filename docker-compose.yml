@@ -11,3 +11,4 @@ services:
     volumes:
       - ./src:/app/src:ro
       - ./public:/app/public:ro
+      - ./.eslintrc.js:/app/.eslintrc.js:ro

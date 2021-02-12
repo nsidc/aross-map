@@ -11,4 +11,10 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
   ],
+  "rules": {
+    "@typescript-eslint/ban-ts-comment": [
+      "warn",
+      {"ts-ignore": "allow-with-description",},
+    ],
+  },
 }

@@ -14,9 +14,8 @@ function App() {
 
 	// initialization - retrieve GeoJSON features from Mock JSON API get features
   // from mock GeoJson API (read from flat .json file in public directory)
-  useEffect( () => {
-
-    fetch('/test.geojson')
+  useEffect(() => {
+    void fetch('/test.geojson')
       .then(response => response.json())
       .then((fetchedFeatures) => {
 
