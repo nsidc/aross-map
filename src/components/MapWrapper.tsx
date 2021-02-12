@@ -1,7 +1,7 @@
 // Inspired by a very helpful blog post:
 //     https://taylor.callsen.me/using-openlayers-with-react-functional-components/
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import Map from 'ol/Map'
 import View from 'ol/View'
@@ -19,7 +19,7 @@ interface IMapWrapperProps {
   features: Array<any>;
 }
 
-function MapWrapper(props: IMapWrapperProps) {
+const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
   type TMap = Map | undefined;
   type TFeatureLayer = Layer | undefined;
   type TCoordinate = Coordinate | undefined;

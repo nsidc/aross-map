@@ -15,9 +15,18 @@ module.exports = {
     "eqeqeq": [
       "error",
     ],
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function",
+      },
+    ],
     "@typescript-eslint/ban-ts-comment": [
       "warn",
-      {"ts-ignore": "allow-with-description",},
+      {
+        "ts-ignore": "allow-with-description",
+      },
     ],
   },
 }

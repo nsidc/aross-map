@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import GeoJSON from 'ol/format/GeoJSON'
 // import Feature from 'ol/Feature';
@@ -8,7 +8,7 @@ import MapWrapper from './components/MapWrapper';
 import Feature from 'ol/Feature';
 
 
-function App() {
+const App: React.FC = () => {
   // set intial state
   const [ features, setFeatures ] = useState<Feature[]>([])
 
