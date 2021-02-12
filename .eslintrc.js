@@ -1,5 +1,8 @@
 module.exports = {
   "parser": "@typescript-eslint/parser",
+  // The below config enables type-aware linting, but significantly slows down
+  // eslint.
+  //     https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/README.md#configuration
   "parserOptions": {
     "tsconfigRootDir": __dirname,
     "project": ["./tsconfig.json"],
