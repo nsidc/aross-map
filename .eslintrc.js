@@ -28,5 +28,8 @@ module.exports = {
         "ts-ignore": "allow-with-description",
       },
     ],
+    "@typescript-eslint/no-explicit-any": [
+      "error",
+    ]
   },
 }
