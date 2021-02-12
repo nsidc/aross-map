@@ -3,7 +3,7 @@
 # Arctic Rain on Snow Study (AROSS) Observations Map
 
 The AROSS Observation Map displays rain-on-snow event observations sourced from
-[the LEO Network](www.leonetwork.org) on an interactive map.
+[the LEO Network](https://www.leonetwork.org) on an interactive map.
 
 
 ## Development
