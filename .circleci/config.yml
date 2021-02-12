@@ -1,0 +1,23 @@
+version: 2
+
+jobs:
+  test:
+    docker:
+      - image: circleci/node:14
+    working_directory: ~/aross-map
+    steps:
+      - checkout
+      - run:
+          name: Run tests
+          command: |
+            npm ci
+            npm run lint
+            # TODO: Re-enable once we have tests
+            # npm run test
+
+workflows:
+  version: 2
+
+  build:
+    jobs:
+      - test

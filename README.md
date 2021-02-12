@@ -1,9 +1,10 @@
 [![NSF-1928230](https://img.shields.io/badge/NSF-1928230-red.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1928230)
+[![nsidc](https://circleci.com/gh/nsidc/aross-map.svg?style=shield)](https://app.circleci.com/pipelines/github/nsidc/aross-map)
 
 # Arctic Rain on Snow Study (AROSS) Observations Map
 
 The AROSS Observation Map displays rain-on-snow event observations sourced from
-[the LEO Network](www.leonetwork.org) on an interactive map.
+[the LEO Network](https://www.leonetwork.org) on an interactive map.
 
 
 ## Development
@@ -24,11 +25,8 @@ docker-compose up --build
 
 #### `npm start`
 
-Runs the app in the development mode. Open
-[http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits. You will also see any lint errors in
-the console.
+Runs the app in the development mode on port 3000. Your browser should reload
+if you make edits. You will also see any lint errors in the console.
 
 
 #### `npm test`
@@ -36,6 +34,12 @@ the console.
 Launches the test runner in the interactive watch mode. See the section about
 [running tests](https://facebook.github.io/create-react-app/docs/running-tests)
 for more information.
+
+
+#### `npm run lint`
+
+Manually triggers ESLint static analysis with type-aware linting thanks to the
+`typescript-eslint` plugin.
 
 
 #### `npm run build`
