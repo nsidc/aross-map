@@ -65,10 +65,10 @@ function MapWrapper(props: IMapWrapperProps) {
   // Update on state change
   useEffect(() => {
     if (
-      map == undefined
-      || featuresLayer == undefined
-      || props.features == undefined
-      || props.features.length == 0
+      map === undefined
+      || featuresLayer === undefined
+      || props.features === undefined
+      || props.features.length === 0
     ) {
       return;
     }
