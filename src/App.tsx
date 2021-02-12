@@ -15,7 +15,7 @@ const App: React.FC = () => {
 	// initialization - retrieve GeoJSON features from Mock JSON API get features
   // from mock GeoJson API (read from flat .json file in public directory)
   useEffect(() => {
-    void fetch('/test.geojson')
+    void fetch('/boulder_city_limits.geojson')
       .then(response => response.json())
       .then((fetchedFeatures) => {
 
