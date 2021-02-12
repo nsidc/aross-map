@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  webapp:
+    build: .
+    image: nsidc/aross-map:dev
+    # command: npm start
+    # command: sleep infinity
+    ports:
+      - 80:3000
+    volumes:
+      - ./src:/app/src:ro
+      - ./public:/app/public:ro
+      - ./.eslintrc.js:/app/.eslintrc.js:ro

@@ -8,7 +8,19 @@ The AROSS Observation Map displays rain-on-snow event observations sourced from
 
 ## Development
 
-### Available Scripts
+### Running the application
+
+Start the application anywhere with Docker and `docker-compose`. This
+configuration gives you an application running at port 80 with source code
+hot-reloading. Because the source code is volume-mounted, you can edit the
+source code on the host and see changes reflected in the server run by Docker.
+
+```
+docker-compose up --build
+```
+
+
+### Available scripts
 
 #### `npm start`
 
