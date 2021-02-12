@@ -7,8 +7,8 @@ RUN npm ci
 
 # Intentionally avoid copying node_modules; that would overwrite what we just
 # installed.
-COPY ./src ./public
-COPY ./public ./public 
+COPY src ./src
+COPY public ./public
 COPY ./tsconfig.json .
 EXPOSE 3000
 
