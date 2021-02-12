@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import GeoJSON from 'ol/format/GeoJSON'
 // import Feature from 'ol/Feature';
 
-import './App.css';
+import './style/App.css';
 import MapWrapper from './components/MapWrapper';
 import Feature from 'ol/Feature';
 
