@@ -22,7 +22,6 @@ const BASEMAP_CHOICES = [
   'USGSImageryTopo',
   'USGSImageryOnly',
   'USGSShadedReliefOnly',
-  'USGSTNMBlank',
   'USGSHydroCached',
 ] as const;
 
