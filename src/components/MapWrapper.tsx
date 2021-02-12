@@ -17,18 +17,39 @@ import type {Coordinate} from 'ol/coordinate';
 import type MapBrowserEvent from 'ol/MapBrowserEvent';
 
 
+const BASEMAP_CHOICES = [
+  'USGSTopo',
+  'USGSImageryTopo',
+  'USGSImageryOnly',
+  'USGSShadedReliefOnly',
+  'USGSTNMBlank',
+  'USGSHydroCached',
+] as const;
+
 interface IMapWrapperProps {
   features: Array<Feature>;
 }
+type TMap = Map | undefined;
+type TLayer = Layer | undefined
+type TCoordinate = Coordinate | undefined;
+type TBasemap = typeof BASEMAP_CHOICES[number];
+
+const getBasemapUrl = (basemap: TBasemap): string => {
+  const basemap_url = (
+    'https://basemap.nationalmap.gov/arcgis/rest/services'
+    + `/${basemap}/MapServer/tile/{z}/{y}/{x}`
+  );
+  return basemap_url;
+}
+
 
 const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
-  type TMap = Map | undefined;
-  type TFeatureLayer = Layer | undefined;
-  type TCoordinate = Coordinate | undefined;
 
   const [ map, setMap ] = useState<TMap>();
-  const [ featuresLayer, setFeaturesLayer ] = useState<TFeatureLayer>();
-  const [ selectedCoord , setSelectedCoord ] = useState<TCoordinate>();
+  const [ featuresLayer, setFeaturesLayer ] = useState<TLayer>();
+  const [ basemapLayer, setBasemapLayer ] = useState<TLayer>();
+  const [ selectedCoord, setSelectedCoord ] = useState<TCoordinate>();
+  const [ selectedBasemap, setSelectedBasemap ] = useState<TBasemap>('USGSImageryTopo');
 
   const mapElement = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Map | null>(null);
@@ -37,18 +58,23 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
   // Initialize Map on first render 
   useEffect(() => {
     const initialFeaturesLayer = new VectorLayer({
+      // @ts-ignore: TS2304
+      id: 'features',
       source: new VectorSource()
+    })
+    const initialBasemapLayer = new TileLayer({
+      // @ts-ignore: TS2304
+      id: 'basemap',
+      source: new XYZ({
+        url: getBasemapUrl(selectedBasemap),
+      })
     })
 
     const initialMap = new Map({
       target: mapElement.current || undefined,
       layers: [
-        new TileLayer({
-          source: new XYZ({
-            url: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
-          })
-        }),
-        initialFeaturesLayer
+        initialBasemapLayer,
+        initialFeaturesLayer,
       ],
       view: new View({
         projection: 'EPSG:3857',
@@ -62,9 +88,25 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
 
     setMap(initialMap)
     setFeaturesLayer(initialFeaturesLayer)
+    setBasemapLayer(initialBasemapLayer)
   }, [])
 
-  // Update on state change
+  // Update on basemap change
+  useEffect(() => {
+    if (
+      map === undefined
+      || basemapLayer === undefined
+    ) {
+      return;
+    }
+    
+    console.log(selectedBasemap);
+    basemapLayer.setSource(new XYZ({url: getBasemapUrl(selectedBasemap)}))
+   
+    debugger;
+  }, [selectedBasemap, basemapLayer]);
+
+  // Update on feature/map change
   useEffect(() => {
     if (
       map === undefined
@@ -110,6 +152,19 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
     <div>
       <div ref={mapElement} className="map-container"></div>
       
+      <div className="select-map">
+        <select
+          value={selectedBasemap}
+          onChange={e => setSelectedBasemap(
+            e.currentTarget.value as TBasemap
+          )}
+        >
+          {BASEMAP_CHOICES.map(basemap => (
+            <option key={basemap}>{basemap}</option>
+          ))}
+        </select>
+      </div>
+
       <div className="clicked-coord-label">
         <p>{ (selectedCoord) ? toStringXY(selectedCoord, 5) : '' }</p>
       </div>

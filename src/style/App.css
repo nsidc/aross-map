@@ -9,6 +9,14 @@
   width: 100%;
 }
 
+.select-map{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: white;
+  border-radius: 5px;
+}
+
 .clicked-coord-label{
   position: absolute;
   right: 0;
