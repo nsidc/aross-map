@@ -2,6 +2,7 @@
 //     https://taylor.callsen.me/using-openlayers-with-react-functional-components/
 
 import React, { useState, useEffect, useRef } from 'react';
+import type {RefObject} from 'react';
 
 import Feature from 'ol/Feature';
 import Map from 'ol/Map'
@@ -12,28 +13,23 @@ import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import {transform} from 'ol/proj'
 import {toStringXY} from 'ol/coordinate';
-import type {Layer} from 'ol/layer'
-import type {Coordinate} from 'ol/coordinate';  
 import type MapBrowserEvent from 'ol/MapBrowserEvent';
 
+import {
+  Basemap,
+  OptionalMap,
+  OptionalLayer, 
+  OptionalCoordinate,
+} from '../types/Map';
+import { StateSetter } from '../types/misc';
 
-const BASEMAP_CHOICES = [
-  'USGSTopo',
-  'USGSImageryTopo',
-  'USGSImageryOnly',
-  'USGSShadedReliefOnly',
-  'USGSHydroCached',
-] as const;
 
 interface IMapWrapperProps {
   features: Array<Feature>;
+  selectedBasemap: Basemap;
 }
-type TMap = Map | undefined;
-type TLayer = Layer | undefined
-type TCoordinate = Coordinate | undefined;
-type TBasemap = typeof BASEMAP_CHOICES[number];
 
-const getBasemapUrl = (basemap: TBasemap): string => {
+const getBasemapUrl = (basemap: Basemap): string => {
   const basemap_url = (
     'https://basemap.nationalmap.gov/arcgis/rest/services'
     + `/${basemap}/MapServer/tile/{z}/{y}/{x}`
@@ -41,20 +37,18 @@ const getBasemapUrl = (basemap: TBasemap): string => {
   return basemap_url;
 }
 
+const useMapInit = (
+  selectedBasemap: Basemap,
+  mapElement: RefObject<HTMLDivElement>,
+  clickHandler: (event: MapBrowserEvent) => void,
+  setFeaturesLayer: StateSetter<OptionalLayer>,
+  setBasemapLayer: StateSetter<OptionalLayer>,
+): Map | undefined => {
+  // TODO: We use the state outside of this function, but tnot the setter, so
+  // we return the state. Should we be instead declaring the state and setter
+  // from outside and passing in the setter?
+  const [ map, setMap ] = useState<OptionalMap>();
 
-const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
-
-  const [ map, setMap ] = useState<TMap>();
-  const [ featuresLayer, setFeaturesLayer ] = useState<TLayer>();
-  const [ basemapLayer, setBasemapLayer ] = useState<TLayer>();
-  const [ selectedCoord, setSelectedCoord ] = useState<TCoordinate>();
-  const [ selectedBasemap, setSelectedBasemap ] = useState<TBasemap>('USGSImageryTopo');
-
-  const mapElement = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<Map | null>(null);
-  mapRef.current = map || null;
-
-  // Initialize Map on first render 
   useEffect(() => {
     const initialFeaturesLayer = new VectorLayer({
       // @ts-ignore: TS2304
@@ -83,14 +77,23 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
       controls: []
     })
 
-    initialMap.on('click', handleMapClick)
+    initialMap.on('click', clickHandler)
 
     setMap(initialMap)
     setFeaturesLayer(initialFeaturesLayer)
     setBasemapLayer(initialBasemapLayer)
+  /* eslint-disable react-hooks/exhaustive-deps */
   }, [])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
-  // Update on basemap change
+  return map;
+};
+
+const useSelectedBasemap = (
+  selectedBasemap: Basemap,
+  map: OptionalMap,
+  basemapLayer: OptionalLayer,
+): void => {
   useEffect(() => {
     if (
       map === undefined
@@ -99,39 +102,49 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
       return;
     }
     
-    console.log(selectedBasemap);
     basemapLayer.setSource(new XYZ({url: getBasemapUrl(selectedBasemap)}))
-   
-    debugger;
-  }, [selectedBasemap, basemapLayer]);
+  }, [selectedBasemap, basemapLayer, map]);
+}
 
-  // Update on feature/map change
+const useFeatures = (
+  features: Array<Feature>,
+  featuresLayer: OptionalLayer,
+  map: OptionalMap,
+): void => {
   useEffect(() => {
     if (
       map === undefined
       || featuresLayer === undefined
-      || props.features === undefined
-      || props.features.length === 0
+      || features === undefined
+      || features.length === 0
     ) {
       return;
     }
 
     featuresLayer.setSource(
-      new VectorSource({
-        features: props.features
-      })
+      new VectorSource({features})
     )
 
     map.getView().fit(
       /* eslint-disable @typescript-eslint/no-unsafe-call */
-      // @ts-ignore TS2339
+      // @ts-ignore TS2340
       featuresLayer.getSource().getExtent(),
       /* eslint-enable @typescript-eslint/no-unsafe-call */
       {padding: [100, 100, 100, 100]}
     )
 
-  }, [props.features, featuresLayer, map])
+  }, [features, featuresLayer, map])
 
+}
+
+const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
+
+  const [ featuresLayer, setFeaturesLayer ] = useState<OptionalLayer>();
+  const [ basemapLayer, setBasemapLayer ] = useState<OptionalLayer>();
+  const [ selectedCoord, setSelectedCoord ] = useState<OptionalCoordinate>();
+
+  const mapElement = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<Map | null>(null);
   const handleMapClick = (event: MapBrowserEvent) => {
 
     if ( !mapRef || !mapRef.current ) {
@@ -145,24 +158,30 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
     setSelectedCoord( transormedCoord )
   }
 
-  // TODO: Give names to hooks and call them
+  // Register behaviors
+  const map = useMapInit(
+    props.selectedBasemap,
+    mapElement,
+    handleMapClick,
+    setFeaturesLayer,
+    setBasemapLayer,
+  );
+  useSelectedBasemap(
+    props.selectedBasemap,
+    map,
+    basemapLayer,
+  );
+  useFeatures(
+    props.features,
+    featuresLayer,
+    map,
+  );
+
+  mapRef.current = map || null;
 
   return (      
     <div>
       <div ref={mapElement} className="map-container"></div>
-      
-      <div className="select-map">
-        <select
-          value={selectedBasemap}
-          onChange={e => setSelectedBasemap(
-            e.currentTarget.value as TBasemap
-          )}
-        >
-          {BASEMAP_CHOICES.map(basemap => (
-            <option key={basemap}>{basemap}</option>
-          ))}
-        </select>
-      </div>
 
       <div className="clicked-coord-label">
         <p>{ (selectedCoord) ? toStringXY(selectedCoord, 5) : '' }</p>
