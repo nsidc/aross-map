@@ -4,8 +4,8 @@ services:
   webapp:
     build: .
     image: nsidc/aross-map:dev
-    # command: npm start
-    # command: sleep infinity
+    # Useful to skip linting errors and expose compiler errors:
+    # command: 'npm run start:nolint'
     ports:
       - 80:3000
     volumes:

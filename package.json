@@ -25,10 +25,13 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:nolint": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "build": "react-scripts build",
+    "build:nolint": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src --ext .ts --ext .tsx"
+    "lint": "eslint src --ext .ts --ext .tsx",
+    "compile": "tsc --project tsconfig.json"
   },
   "browserslist": {
     "production": [
