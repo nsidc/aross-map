@@ -42,14 +42,9 @@ const App: React.FC = () => {
             wktOptions
         )
 
-        // set features into state (which will be passed into OpenLayers
-        //  map component as props)
         setFeatures(parsedFeatures)
-
       })
-
   }, [])
-
 
   return (
     <div className="App">
