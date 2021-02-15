@@ -7,7 +7,7 @@ import {
 
 interface IBasemapSelectorProps {
   selectedBasemap: Basemap;
-  onChange: (basemap: Basemap) => any;
+  onChange: (basemap: Basemap) => void;
 }
 
 const BasemapSelector: React.FC<IBasemapSelectorProps> = (

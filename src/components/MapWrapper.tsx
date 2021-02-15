@@ -82,7 +82,9 @@ const useMapInit = (
     setMap(initialMap)
     setFeaturesLayer(initialFeaturesLayer)
     setBasemapLayer(initialBasemapLayer)
+  /* eslint-disable react-hooks/exhaustive-deps */
   }, [])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   return map;
 };
@@ -101,7 +103,7 @@ const useSelectedBasemap = (
     }
     
     basemapLayer.setSource(new XYZ({url: getBasemapUrl(selectedBasemap)}))
-  }, [selectedBasemap, basemapLayer]);
+  }, [selectedBasemap, basemapLayer, map]);
 }
 
 const useFeatures = (
