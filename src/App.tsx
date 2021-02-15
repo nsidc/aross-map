@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
 import GeoJSON from 'ol/format/GeoJSON'
-// import Feature from 'ol/Feature';
+import Feature from 'ol/Feature';
 
 import './style/App.css';
 import MapWrapper from './components/MapWrapper';
-import Feature from 'ol/Feature';
+import BasemapSelector from './components/BasemapSelector';
+import {Basemap} from './types/Map';
 
 
 const App: React.FC = () => {
   // set intial state
+  const [ selectedBasemap, setSelectedBasemap ] = useState<Basemap>('USGSImageryTopo');
   const [ features, setFeatures ] = useState<Feature[]>([])
 
 	// initialization - retrieve GeoJSON features from Mock JSON API get features
@@ -42,7 +44,13 @@ const App: React.FC = () => {
   return (
     <div className="App">
 
-      <MapWrapper features={features} />
+      <MapWrapper
+        features={features}
+        selectedBasemap={selectedBasemap} />
+
+      <BasemapSelector
+        selectedBasemap={selectedBasemap}
+        onChange={setSelectedBasemap} />
 
     </div>
   );

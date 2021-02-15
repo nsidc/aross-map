@@ -16,7 +16,6 @@ import {toStringXY} from 'ol/coordinate';
 import type MapBrowserEvent from 'ol/MapBrowserEvent';
 
 import {
-  BASEMAP_CHOICES,
   Basemap,
   OptionalMap,
   OptionalLayer, 
@@ -27,6 +26,7 @@ import { StateSetter } from '../types/misc';
 
 interface IMapWrapperProps {
   features: Array<Feature>;
+  selectedBasemap: Basemap;
 }
 
 const getBasemapUrl = (basemap: Basemap): string => {
@@ -140,7 +140,6 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
   const [ featuresLayer, setFeaturesLayer ] = useState<OptionalLayer>();
   const [ basemapLayer, setBasemapLayer ] = useState<OptionalLayer>();
   const [ selectedCoord, setSelectedCoord ] = useState<OptionalCoordinate>();
-  const [ selectedBasemap, setSelectedBasemap ] = useState<Basemap>('USGSImageryTopo');
 
   const mapElement = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Map | null>(null);
@@ -159,14 +158,14 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
 
   // Register behaviors
   const map = useMapInit(
-    selectedBasemap,
+    props.selectedBasemap,
     mapElement,
     handleMapClick,
     setFeaturesLayer,
     setBasemapLayer,
   );
   useSelectedBasemap(
-    selectedBasemap,
+    props.selectedBasemap,
     map,
     basemapLayer,
   );
@@ -176,25 +175,11 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
     map,
   );
 
-
   mapRef.current = map || null;
 
   return (      
     <div>
       <div ref={mapElement} className="map-container"></div>
-      
-      <div className="select-map">
-        <select
-          value={selectedBasemap}
-          onChange={e => setSelectedBasemap(
-            e.currentTarget.value as Basemap
-          )}
-        >
-          {BASEMAP_CHOICES.map(basemap => (
-            <option key={basemap}>{basemap}</option>
-          ))}
-        </select>
-      </div>
 
       <div className="clicked-coord-label">
         <p>{ (selectedCoord) ? toStringXY(selectedCoord, 5) : '' }</p>
