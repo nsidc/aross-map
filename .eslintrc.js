@@ -7,7 +7,10 @@ module.exports = {
     "tsconfigRootDir": __dirname,
     "project": ["./tsconfig.json"],
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": [
+    "@typescript-eslint",
+    "react-hooks",
+  ],
   "extends": [
     "react-app",
     "react-app/jest",
@@ -25,6 +28,8 @@ module.exports = {
         "unnamedComponents": "arrow-function",
       },
     ],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "@typescript-eslint/ban-ts-comment": [
       "warn",
       {
