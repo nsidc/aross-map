@@ -8,21 +8,31 @@ import MapWrapper from './components/MapWrapper';
 import BasemapSelector from './components/BasemapSelector';
 import {Basemap} from './types/Map';
 
+const LEO_NETWORK_URL: string = (
+  'https://www.leonetwork.org/en/explore/posts?query='
+  // Get posts, tweets, and articles:
+  + '&type=TWEET&type=POST&type=ARTICLE'
+  // In GeoJSON:
+  + '&mode=geojson_compact'
+  // With no spatial selection:
+  + '&region=&polygon=&bbox=&minlat=&maxlat=&near=&radius='
+  // With "Rain on Snow" or "ROS" in the category field:
+  + '&categories=ROS%7cRain+on+Snow&categories_anyOrAll=ANY'
+  // With no temporal selection:
+  + '&fromdate=&todate='
+);
+
 
 const App: React.FC = () => {
-  // set intial state
   const [ selectedBasemap, setSelectedBasemap ] = useState<Basemap>('USGSImageryTopo');
   const [ features, setFeatures ] = useState<Feature[]>([])
 
-	// initialization - retrieve GeoJSON features from Mock JSON API get features
-  // from mock GeoJson API (read from flat .json file in public directory)
+  // Fetch features from LEO on app initialization.
   useEffect(() => {
-    void fetch('/boulder_city_limits.geojson')
+    void fetch(LEO_NETWORK_URL)
       .then(response => response.json())
       .then((fetchedFeatures) => {
 
-        // parse fetched geojson into OpenLayers features
-        //  use options to convert feature from EPSG:4326 to EPSG:3857
         const wktOptions = {
           dataProjection: 'EPSG:4326',
           featureProjection: 'EPSG:3857'
