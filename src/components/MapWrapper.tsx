@@ -6,6 +6,7 @@ import type {RefObject} from 'react';
 
 import Feature from 'ol/Feature';
 import Map from 'ol/Map'
+import Overlay from 'ol/Overlay';
 import View from 'ol/View'
 import Select, {SelectEvent} from 'ol/interaction/Select';
 import TileLayer from 'ol/layer/Tile'
@@ -20,9 +21,10 @@ import type MapBrowserEvent from 'ol/MapBrowserEvent';
 import MapTip from './MapTip';
 import {
   Basemap,
-  OptionalMap,
-  OptionalLayer,
   OptionalCoordinate,
+  OptionalLayer,
+  OptionalMap,
+  OptionalOverlay,
 } from '../types/Map';
 import { StateSetter } from '../types/misc';
 
@@ -40,22 +42,23 @@ const getBasemapUrl = (basemap: Basemap): string => {
   return basemap_url;
 }
 
+// When this component is first loaded, populate the map and other initial
+// state.
 const useMapInit = (
   selectedBasemap: Basemap,
   mapElement: RefObject<HTMLDivElement>,
+  overlayElement: RefObject<HTMLDivElement>,
   clickHandler: (event: MapBrowserEvent) => void,
   selectHandler: (event: SelectEvent) => void,
+  setMap: StateSetter<OptionalMap>,
   setFeaturesLayer: StateSetter<OptionalLayer>,
   setBasemapLayer: StateSetter<OptionalLayer>,
-): Map | undefined => {
-  // TODO: We use the state outside of this function, but tnot the setter, so
-  // we return the state. Should we be instead declaring the state and setter
-  // from outside and passing in the setter?
-  const [ map, setMap ] = useState<OptionalMap>();
-
+  setFeatureInfoOverlay: StateSetter<OptionalOverlay>,
+): void => {
   useEffect(() => {
-    const selectInteraction = new Select({condition: click})
-    selectInteraction.on('select', selectHandler);
+    const initialFeatureInfoOverlay = new Overlay({
+      element: overlayElement.current!,
+    });
 
     const initialFeaturesLayer = new VectorLayer({
       // @ts-ignore: TS2304
@@ -81,6 +84,12 @@ const useMapInit = (
         center: [0, 0],
         zoom: 2
       }),
+      overlays: [
+        initialFeatureInfoOverlay,
+      ],
+      // Hide the default controls for a less cluttery experience.
+      // Zoom in and out with pinch or scroll, and pan with click and drag or
+      // touch and drag.
       controls: [],
     })
 
@@ -89,20 +98,22 @@ const useMapInit = (
     // We have to add the interaction after instantiating `initialMap` because
     // we want to take advantage of the default interactions (click-and-drag to
     // pan, etc.)
+    const selectInteraction = new Select({condition: click})
+    selectInteraction.on('select', selectHandler);
     initialMap.addInteraction(selectInteraction);
 
     // Populate states that depend on map initialization
     setMap(initialMap);
     setFeaturesLayer(initialFeaturesLayer);
     setBasemapLayer(initialBasemapLayer);
+    setFeatureInfoOverlay(initialFeatureInfoOverlay);
 
   /* eslint-disable react-hooks/exhaustive-deps */
   }, [])
   /* eslint-enable react-hooks/exhaustive-deps */
-
-  return map;
 };
 
+// When the selected basemap is updated, update the basemap layer.
 const useSelectedBasemap = (
   selectedBasemap: Basemap,
   basemapLayer: OptionalLayer,
@@ -120,6 +131,7 @@ const useSelectedBasemap = (
   }, [selectedBasemap, basemapLayer, map]);
 }
 
+// When features are updated, place them on the map and update the map view.
 const useFeatures = (
   features: Array<Feature>,
   featuresLayer: OptionalLayer,
@@ -150,18 +162,44 @@ const useFeatures = (
   }, [features, featuresLayer, map])
 };
 
+// When a feature is selected, position the overlay appropriately.
+const useSelectedFeature = (
+  featureInfoOverlay: OptionalOverlay,
+  selectedFeatures: Array<Feature>,
+): void => {
+  if (
+    featureInfoOverlay === undefined
+    || selectedFeatures.length === 0
+  ) {
+    return;
+  }
+
+  // @ts-ignore TS2339
+  // flatCoordinates is not documented, but is present on the object. Why? Is
+  // this dangerous?
+  const pos = selectedFeatures[0].getGeometry()!.flatCoordinates as Array<float>;
+  featureInfoOverlay.setPosition(pos);
+}
+
 const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
 
+  const [ map, setMap ] = useState<OptionalMap>();
   const [ featuresLayer, setFeaturesLayer ] = useState<OptionalLayer>();
   const [ basemapLayer, setBasemapLayer ] = useState<OptionalLayer>();
   const [ selectedCoord, setSelectedCoord ] = useState<OptionalCoordinate>();
-  const [ selectedFeatures, setSelectedFeatures ] = useState<Array<Feature>>([]);
+  const [ selectedFeatures, setSelectedFeatures ] =
+    useState<Array<Feature>>([]);
+  const [ featureInfoOverlay, setFeatureInfoOverlay ] =
+    useState<OptionalOverlay>();
 
   const mapElement = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Map | null>(null);
+  const overlayElement = useRef<HTMLDivElement | null>(null);
+
   const handleFeatureSelect = (event: SelectEvent) => {
     setSelectedFeatures(event.selected);
   }
+
   const handleMapClick = (event: MapBrowserEvent) => {
 
     if ( !mapRef || !mapRef.current ) {
@@ -172,17 +210,20 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
     const clickedCoord = mapRef.current.getCoordinateFromPixel(event.pixel);
     const transormedCoord = transform(clickedCoord, 'EPSG:3857', 'EPSG:4326')
 
-    setSelectedCoord( transormedCoord )
+    setSelectedCoord(transormedCoord);
   }
 
   // Register behaviors
-  const map = useMapInit(
+  useMapInit(
     props.selectedBasemap,
     mapElement,
+    overlayElement,
     handleMapClick,
     handleFeatureSelect,
+    setMap,
     setFeaturesLayer,
     setBasemapLayer,
+    setFeatureInfoOverlay,
   );
   useSelectedBasemap(
     props.selectedBasemap,
@@ -194,18 +235,27 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
     featuresLayer,
     map,
   );
+  useSelectedFeature(
+    featureInfoOverlay,
+    selectedFeatures,
+  );
 
   mapRef.current = map || null;
 
 
   return (
     <div>
+
       <div ref={mapElement} className="map-container"></div>
-      <MapTip features={selectedFeatures} />
+
+      <div ref={overlayElement} className="foo">
+        <MapTip features={selectedFeatures} />
+      </div>
 
       <div className="clicked-coord-label">
         <p>{ (selectedCoord) ? toStringXY(selectedCoord, 5) : '' }</p>
       </div>
+
     </div>
   )
 }
