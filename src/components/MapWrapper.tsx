@@ -17,6 +17,7 @@ import {transform} from 'ol/proj'
 import {toStringXY} from 'ol/coordinate';
 import type MapBrowserEvent from 'ol/MapBrowserEvent';
 
+import MapTip from './MapTip';
 import {
   Basemap,
   OptionalMap,
@@ -196,28 +197,11 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
 
   mapRef.current = map || null;
 
-  const featuresHTML = (features: Array<Feature>): JSX.Element | null => {
-    const f = features[0]
-    if (f === undefined) {
-      return null;
-    }
-
-    const featureProperties = f.getProperties();
-    delete featureProperties.geometry;
-
-    return (
-      <pre>
-        {JSON.stringify(featureProperties, null, 2)}
-      </pre>
-    );
-  };
 
   return (
     <div>
       <div ref={mapElement} className="map-container"></div>
-      <div className="selected-features">
-        {featuresHTML(selectedFeatures)}
-      </div>
+      <MapTip features={selectedFeatures} />
 
       <div className="clicked-coord-label">
         <p>{ (selectedCoord) ? toStringXY(selectedCoord, 5) : '' }</p>
