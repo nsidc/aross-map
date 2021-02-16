@@ -1,6 +1,7 @@
-import Map from 'ol/Map'
+import Map from 'ol/Map';
+import Overlay from 'ol/Overlay';
 import type {Coordinate} from 'ol/coordinate';  
-import type {Layer} from 'ol/layer'
+import type {Layer} from 'ol/layer';
 
 
 export const BASEMAP_CHOICES = [
@@ -14,4 +15,5 @@ export const BASEMAP_CHOICES = [
 export type OptionalMap = Map | undefined;
 export type OptionalLayer = Layer | undefined
 export type OptionalCoordinate = Coordinate | undefined;
+export type OptionalOverlay = Overlay | undefined;
 export type Basemap = typeof BASEMAP_CHOICES[number];
