@@ -32,6 +32,9 @@
   margin-top: 0px;
   margin-bottom: 5px;
 }
+.feature-title h3 a {
+  text-decoration: none;
+}
 
 .feature-date {
   font-size: 90%;
