@@ -6,7 +6,6 @@ import type {RefObject} from 'react';
 
 import Feature from 'ol/Feature';
 import Map from 'ol/Map'
-import Overlay from 'ol/Overlay'
 import View from 'ol/View'
 import Select, {SelectEvent} from 'ol/interaction/Select';
 import TileLayer from 'ol/layer/Tile'
@@ -43,7 +42,6 @@ const getBasemapUrl = (basemap: Basemap): string => {
 const useMapInit = (
   selectedBasemap: Basemap,
   mapElement: RefObject<HTMLDivElement>,
-  popupElement: RefObject<HTMLDivElement>,
   clickHandler: (event: MapBrowserEvent) => void,
   selectHandler: (event: SelectEvent) => void,
   setFeaturesLayer: StateSetter<OptionalLayer>,
@@ -57,9 +55,6 @@ const useMapInit = (
   useEffect(() => {
     const selectInteraction = new Select({condition: click})
     selectInteraction.on('select', selectHandler);
-    const popupOverlay = new Overlay({
-      element: popupElement.current || undefined,
-    });
 
     const initialFeaturesLayer = new VectorLayer({
       // @ts-ignore: TS2304
@@ -86,9 +81,6 @@ const useMapInit = (
         zoom: 2
       }),
       controls: [],
-      overlays: [
-        popupOverlay,
-      ],
     })
 
     initialMap.on('click', clickHandler);
@@ -165,7 +157,6 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
   const [ selectedFeatures, setSelectedFeatures ] = useState<Array<Feature>>([]);
 
   const mapElement = useRef<HTMLDivElement | null>(null);
-  const popupElement = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Map | null>(null);
   const handleFeatureSelect = (event: SelectEvent) => {
     setSelectedFeatures(event.selected);
@@ -187,7 +178,6 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
   const map = useMapInit(
     props.selectedBasemap,
     mapElement,
-    popupElement,
     handleMapClick,
     handleFeatureSelect,
     setFeaturesLayer,
@@ -206,21 +196,27 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
 
   mapRef.current = map || null;
 
-  const printFeatures = (features: Array<Feature>): string => {
+  const featuresHTML = (features: Array<Feature>): JSX.Element | null => {
     const f = features[0]
     if (f === undefined) {
-      return '';
+      return null;
     }
-    const featureProperties = f.getProperties()
-    return `title: ${featureProperties['title']}`;
+
+    const featureProperties = f.getProperties();
+    delete featureProperties.geometry;
+
+    return (
+      <pre>
+        {JSON.stringify(featureProperties, null, 2)}
+      </pre>
+    );
   };
 
   return (
     <div>
       <div ref={mapElement} className="map-container"></div>
-      <div ref={popupElement} className="popup">Foo</div>
       <div className="selected-features">
-        {printFeatures(selectedFeatures)}
+        {featuresHTML(selectedFeatures)}
       </div>
 
       <div className="clicked-coord-label">

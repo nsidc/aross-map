@@ -18,6 +18,7 @@
 }
 
 .selected-features {
+  text-align: left;
   position: absolute;
   right: 0;
   top: 0;
@@ -35,9 +36,4 @@
 
 .clicked-coord-label p {
   margin: 10px;
-}
-
-.popup {
-  background: red;
-  border-radius: 5px;
 }
