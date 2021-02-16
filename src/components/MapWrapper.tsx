@@ -181,7 +181,7 @@ const useSelectedFeature = (
   // @ts-ignore TS2339
   // flatCoordinates is not documented, but is present on the object. Why? Is
   // this dangerous?
-  const pos = selectedFeatures[0].getGeometry()!.flatCoordinates;
+  const pos = selectedFeatures[0].getGeometry()!.flatCoordinates as Array<float>;
   featureInfoOverlay.setPosition(pos);
 }
 
