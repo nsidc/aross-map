@@ -82,7 +82,8 @@ const useMapInit = (
       view: new View({
         projection: 'EPSG:3857',
         center: [0, 0],
-        zoom: 2
+        zoom: 2,
+        maxZoom: 16,
       }),
       overlays: [
         initialFeatureInfoOverlay,
