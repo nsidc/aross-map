@@ -55,10 +55,6 @@ const useMapInit = (
   setBasemapLayer: StateSetter<OptionalLayer>,
   setFeatureInfoOverlay: StateSetter<OptionalOverlay>,
 ): void => {
-  // TODO: We use the state outside of this function, but not the setter, so we
-  // return the state. Should we be instead declaring the state and setter from
-  // outside and passing in the setter?
-
   useEffect(() => {
     const initialFeatureInfoOverlay = new Overlay({
       element: overlayElement.current!,
