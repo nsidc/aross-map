@@ -24,6 +24,26 @@
   top: 0;
   background: white;
   border-radius: 5px;
+  padding: 10px;
+  width: 280px;
+}
+
+.feature-title h3 {
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.feature-date {
+  font-size: 90%;
+  color: grey;
+}
+.feature-location {
+  font-size: 90%;
+  color: grey;
+}
+.feature-source {
+  font-size: 90%;
+  color: grey;
 }
 
 .clicked-coord-label{
