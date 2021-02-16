@@ -17,6 +17,14 @@
   border-radius: 5px;
 }
 
+.selected-features {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: white;
+  border-radius: 5px;
+}
+
 .clicked-coord-label{
   position: absolute;
   right: 0;
@@ -27,4 +35,9 @@
 
 .clicked-coord-label p {
   margin: 10px;
+}
+
+.popup {
+  background: red;
+  border-radius: 5px;
 }
