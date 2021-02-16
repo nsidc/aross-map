@@ -7,10 +7,12 @@ import type {RefObject} from 'react';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map'
 import View from 'ol/View'
+import Select, {SelectEvent} from 'ol/interaction/Select';
 import TileLayer from 'ol/layer/Tile'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
+import {click} from 'ol/events/condition';
 import {transform} from 'ol/proj'
 import {toStringXY} from 'ol/coordinate';
 import type MapBrowserEvent from 'ol/MapBrowserEvent';
@@ -18,7 +20,7 @@ import type MapBrowserEvent from 'ol/MapBrowserEvent';
 import {
   Basemap,
   OptionalMap,
-  OptionalLayer, 
+  OptionalLayer,
   OptionalCoordinate,
 } from '../types/Map';
 import { StateSetter } from '../types/misc';
@@ -41,6 +43,7 @@ const useMapInit = (
   selectedBasemap: Basemap,
   mapElement: RefObject<HTMLDivElement>,
   clickHandler: (event: MapBrowserEvent) => void,
+  selectHandler: (event: SelectEvent) => void,
   setFeaturesLayer: StateSetter<OptionalLayer>,
   setBasemapLayer: StateSetter<OptionalLayer>,
 ): Map | undefined => {
@@ -50,10 +53,13 @@ const useMapInit = (
   const [ map, setMap ] = useState<OptionalMap>();
 
   useEffect(() => {
+    const selectInteraction = new Select({condition: click})
+    selectInteraction.on('select', selectHandler);
+
     const initialFeaturesLayer = new VectorLayer({
       // @ts-ignore: TS2304
       id: 'features',
-      source: new VectorSource()
+      source: new VectorSource(),
     })
     const initialBasemapLayer = new TileLayer({
       // @ts-ignore: TS2304
@@ -74,14 +80,21 @@ const useMapInit = (
         center: [0, 0],
         zoom: 2
       }),
-      controls: []
+      controls: [],
     })
 
-    initialMap.on('click', clickHandler)
+    initialMap.on('click', clickHandler);
 
-    setMap(initialMap)
-    setFeaturesLayer(initialFeaturesLayer)
-    setBasemapLayer(initialBasemapLayer)
+    // We have to add the interaction after instantiating `initialMap` because
+    // we want to take advantage of the default interactions (click-and-drag to
+    // pan, etc.)
+    initialMap.addInteraction(selectInteraction);
+
+    // Populate states that depend on map initialization
+    setMap(initialMap);
+    setFeaturesLayer(initialFeaturesLayer);
+    setBasemapLayer(initialBasemapLayer);
+
   /* eslint-disable react-hooks/exhaustive-deps */
   }, [])
   /* eslint-enable react-hooks/exhaustive-deps */
@@ -91,8 +104,8 @@ const useMapInit = (
 
 const useSelectedBasemap = (
   selectedBasemap: Basemap,
-  map: OptionalMap,
   basemapLayer: OptionalLayer,
+  map: OptionalMap,
 ): void => {
   useEffect(() => {
     if (
@@ -101,7 +114,7 @@ const useSelectedBasemap = (
     ) {
       return;
     }
-    
+
     basemapLayer.setSource(new XYZ({url: getBasemapUrl(selectedBasemap)}))
   }, [selectedBasemap, basemapLayer, map]);
 }
@@ -134,23 +147,26 @@ const useFeatures = (
     )
 
   }, [features, featuresLayer, map])
-
-}
+};
 
 const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
 
   const [ featuresLayer, setFeaturesLayer ] = useState<OptionalLayer>();
   const [ basemapLayer, setBasemapLayer ] = useState<OptionalLayer>();
   const [ selectedCoord, setSelectedCoord ] = useState<OptionalCoordinate>();
+  const [ selectedFeatures, setSelectedFeatures ] = useState<Array<Feature>>([]);
 
   const mapElement = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Map | null>(null);
+  const handleFeatureSelect = (event: SelectEvent) => {
+    setSelectedFeatures(event.selected);
+  }
   const handleMapClick = (event: MapBrowserEvent) => {
 
     if ( !mapRef || !mapRef.current ) {
       return;
     }
-    
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const clickedCoord = mapRef.current.getCoordinateFromPixel(event.pixel);
     const transormedCoord = transform(clickedCoord, 'EPSG:3857', 'EPSG:4326')
@@ -163,13 +179,14 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
     props.selectedBasemap,
     mapElement,
     handleMapClick,
+    handleFeatureSelect,
     setFeaturesLayer,
     setBasemapLayer,
   );
   useSelectedBasemap(
     props.selectedBasemap,
-    map,
     basemapLayer,
+    map,
   );
   useFeatures(
     props.features,
@@ -179,15 +196,34 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
 
   mapRef.current = map || null;
 
-  return (      
+  const featuresHTML = (features: Array<Feature>): JSX.Element | null => {
+    const f = features[0]
+    if (f === undefined) {
+      return null;
+    }
+
+    const featureProperties = f.getProperties();
+    delete featureProperties.geometry;
+
+    return (
+      <pre>
+        {JSON.stringify(featureProperties, null, 2)}
+      </pre>
+    );
+  };
+
+  return (
     <div>
       <div ref={mapElement} className="map-container"></div>
+      <div className="selected-features">
+        {featuresHTML(selectedFeatures)}
+      </div>
 
       <div className="clicked-coord-label">
         <p>{ (selectedCoord) ? toStringXY(selectedCoord, 5) : '' }</p>
       </div>
     </div>
-  ) 
+  )
 }
 
 export default MapWrapper

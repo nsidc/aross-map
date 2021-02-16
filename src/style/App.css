@@ -17,6 +17,15 @@
   border-radius: 5px;
 }
 
+.selected-features {
+  text-align: left;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: white;
+  border-radius: 5px;
+}
+
 .clicked-coord-label{
   position: absolute;
   right: 0;
