@@ -12,8 +12,7 @@ jobs:
           command: |
             npm ci
             npm run lint
-            # TODO: Re-enable once we have tests
-            # npm run test
+            npm run test
 
 workflows:
   version: 2
