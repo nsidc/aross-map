@@ -9,9 +9,15 @@
   width: 280px;
 }
 
+.MapTip a, .MapTip a:active {
+  color: #003366;
+}
+
 .feature-title h3 {
   margin-top: 0px;
   margin-bottom: 5px;
+
+  color: #003366;
 }
 .feature-title h3 a {
   text-decoration: none;
@@ -19,13 +25,13 @@
 
 .feature-date {
   font-size: 90%;
-  color: grey;
+  color: #8a8587;
 }
 .feature-location {
   font-size: 90%;
-  color: grey;
+  color: #8a8587;
 }
 .feature-source {
   font-size: 90%;
-  color: grey;
+  color: #8a8587;
 }
