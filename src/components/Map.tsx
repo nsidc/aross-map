@@ -214,7 +214,7 @@ const useFeatures = (
       {padding: [100, 100, 100, 100]}
     )
 
-  }, [features, featuresLayer, map])
+  }, [features, featuresLayer, selectInteraction, map])
 };
 
 // When a feature is selected, position the overlay appropriately.
