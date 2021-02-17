@@ -25,11 +25,14 @@ import MapTip from './MapTip';
 import {
   Basemap,
   OptionalCoordinate,
-  OptionalLayer,
   OptionalMap,
   OptionalOverlay,
+  OptionalSelect,
+  OptionalTileLayer,
+  OptionalVectorLayer,
 } from '../types/Map';
 import { StateSetter } from '../types/misc';
+import { getLatestFeatureFromLayer } from '../util/features';
 
 
 interface IMapProps {
@@ -54,9 +57,10 @@ const useMapInit = (
   clickHandler: (event: MapBrowserEvent) => void,
   selectHandler: (event: SelectEvent) => void,
   setMap: StateSetter<OptionalMap>,
-  setFeaturesLayer: StateSetter<OptionalLayer>,
-  setBasemapLayer: StateSetter<OptionalLayer>,
+  setFeaturesLayer: StateSetter<OptionalVectorLayer>,
+  setBasemapLayer: StateSetter<OptionalTileLayer>,
   setFeatureInfoOverlay: StateSetter<OptionalOverlay>,
+  setSelectInteraction: StateSetter<OptionalSelect>,
 ): void => {
   useEffect(() => {
     const initialFeatureInfoOverlay = new Overlay({
@@ -111,7 +115,7 @@ const useMapInit = (
     // We have to add the interaction after instantiating `initialMap` because
     // we want to take advantage of the default interactions (click-and-drag to
     // pan, etc.)
-    const selectInteraction = new Select({
+    const initialSelectInteraction = new Select({
       condition: click,
       style: new style.Style({
         image: new style.Circle({
@@ -126,14 +130,15 @@ const useMapInit = (
         }),
       }),
     });
-    selectInteraction.on('select', selectHandler);
-    initialMap.addInteraction(selectInteraction);
+    initialSelectInteraction.on('select', selectHandler);
+    initialMap.addInteraction(initialSelectInteraction);
 
     // Populate states that depend on map initialization
     setMap(initialMap);
     setFeaturesLayer(initialFeaturesLayer);
     setBasemapLayer(initialBasemapLayer);
     setFeatureInfoOverlay(initialFeatureInfoOverlay);
+    setSelectInteraction(initialSelectInteraction);
 
   /* eslint-disable react-hooks/exhaustive-deps */
   }, [])
@@ -143,7 +148,7 @@ const useMapInit = (
 // When the selected basemap is updated, update the basemap layer.
 const useSelectedBasemap = (
   selectedBasemap: Basemap,
-  basemapLayer: OptionalLayer,
+  basemapLayer: OptionalTileLayer,
   map: OptionalMap,
 ): void => {
   useEffect(() => {
@@ -161,12 +166,14 @@ const useSelectedBasemap = (
 // When features are updated, place them on the map and update the map view.
 const useFeatures = (
   features: Array<Feature>,
-  featuresLayer: OptionalLayer,
+  featuresLayer: OptionalVectorLayer,
+  selectInteraction: OptionalSelect,
   map: OptionalMap,
 ): void => {
   useEffect(() => {
     if (
       map === undefined
+      || selectInteraction == undefined
       || featuresLayer === undefined
       || features === undefined
       || features.length === 0
@@ -181,11 +188,29 @@ const useFeatures = (
       }),
     )
 
+    // Select the latest feature and zoom to it.
+    const selected = selectInteraction.getFeatures();
+    const latestFeature = getLatestFeatureFromLayer(featuresLayer);
+
+    selected.clear();
+    // Adds the selected feature to the collection. This is really the
+    // prescribed way:
+    //   https://openlayers.org/en/latest/examples/box-selection.html
+    selected.push(latestFeature);
+    selectInteraction.dispatchEvent({
+      type: 'select',
+      // @ts-ignore TS2345
+      // Typescript expects a BaseEvent. This isn't 100% match for a BaseEvent
+      // or SelectEvent... How do?
+      selected: [latestFeature],
+      deselected: [],
+    });
+
     map.getView().fit(
-      /* eslint-disable @typescript-eslint/no-unsafe-call */
-      // @ts-ignore TS2340
-      featuresLayer.getSource().getExtent(),
-      /* eslint-enable @typescript-eslint/no-unsafe-call */
+      // @ts-ignore TS2345
+      // Typescript expects a SimpleGeometry, but this is a Geometry. What's
+      // the difference? Geometry works fine.
+      latestFeature.getGeometry(),
       {padding: [100, 100, 100, 100]}
     )
 
@@ -213,14 +238,20 @@ const useSelectedFeature = (
 
 const MapComponent: React.FC<IMapProps> = (props) => {
 
+  // TODO: More specific types; maybe some way to succinctly make optional?
   const [ map, setMap ] = useState<OptionalMap>();
-  const [ featuresLayer, setFeaturesLayer ] = useState<OptionalLayer>();
-  const [ basemapLayer, setBasemapLayer ] = useState<OptionalLayer>();
-  const [ selectedCoord, setSelectedCoord ] = useState<OptionalCoordinate>();
+  const [ featuresLayer, setFeaturesLayer ] =
+    useState<OptionalVectorLayer>();
+  const [ basemapLayer, setBasemapLayer ] =
+    useState<OptionalTileLayer>();
+  const [ selectedCoord, setSelectedCoord ] =
+    useState<OptionalCoordinate>();
   const [ selectedFeatures, setSelectedFeatures ] =
     useState<Array<Feature>>([]);
   const [ featureInfoOverlay, setFeatureInfoOverlay ] =
     useState<OptionalOverlay>();
+  const [ selectInteraction, setSelectInteraction ] =
+    useState<OptionalSelect>();
 
   const mapElement = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Map | null>(null);
@@ -254,6 +285,7 @@ const MapComponent: React.FC<IMapProps> = (props) => {
     setFeaturesLayer,
     setBasemapLayer,
     setFeatureInfoOverlay,
+    setSelectInteraction,
   );
   useSelectedBasemap(
     props.selectedBasemap,
@@ -263,6 +295,7 @@ const MapComponent: React.FC<IMapProps> = (props) => {
   useFeatures(
     props.features,
     featuresLayer,
+    selectInteraction,
     map,
   );
   useSelectedFeature(
