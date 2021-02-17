@@ -4,7 +4,7 @@ import GeoJSON from 'ol/format/GeoJSON'
 import Feature from 'ol/Feature';
 
 import './style/App.css';
-import MapWrapper from './components/MapWrapper';
+import Map from './components/Map';
 import BasemapSelector from './components/BasemapSelector';
 import {Basemap} from './types/Map';
 
@@ -49,7 +49,7 @@ const App: React.FC = () => {
   return (
     <div className="App">
 
-      <MapWrapper
+      <Map
         features={features}
         selectedBasemap={selectedBasemap} />
 
