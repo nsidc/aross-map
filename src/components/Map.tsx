@@ -19,6 +19,7 @@ import {transform} from 'ol/proj'
 import {toStringXY} from 'ol/coordinate';
 import type MapBrowserEvent from 'ol/MapBrowserEvent';
 
+import '../style/Map.css';
 import MapTip from './MapTip';
 import {
   Basemap,
@@ -30,7 +31,7 @@ import {
 import { StateSetter } from '../types/misc';
 
 
-interface IMapWrapperProps {
+interface IMapProps {
   features: Array<Feature>;
   selectedBasemap: Basemap;
 }
@@ -210,7 +211,7 @@ const useSelectedFeature = (
   featureInfoOverlay.setPosition(pos);
 }
 
-const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
+const MapComponent: React.FC<IMapProps> = (props) => {
 
   const [ map, setMap ] = useState<OptionalMap>();
   const [ featuresLayer, setFeaturesLayer ] = useState<OptionalLayer>();
@@ -273,11 +274,11 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
 
 
   return (
-    <div>
+    <div className="Map">
 
       <div ref={mapElement} className="map-container"></div>
 
-      <div ref={overlayElement} className="foo">
+      <div ref={overlayElement}>
         <MapTip features={selectedFeatures} />
       </div>
 
@@ -289,4 +290,4 @@ const MapWrapper: React.FC<IMapWrapperProps> = (props) => {
   )
 }
 
-export default MapWrapper
+export default MapComponent

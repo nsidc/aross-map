@@ -1,12 +1,10 @@
 .App {
-  text-align: center;
   height: 100%;
   width: 100%;
-}
 
-.map-container {
-  height: 100vh;
-  width: 100%;
+  text-align: center;
+  font-family: Roboto, Helvetica, sans-serif;
+  color: #051729;
 }
 
 .select-map{
@@ -15,48 +13,4 @@
   bottom: 0;
   background: white;
   border-radius: 5px;
-}
-
-.selected-features {
-  text-align: left;
-  position: absolute;
-  right: 0;
-  top: 0;
-  background: white;
-  border-radius: 5px;
-  padding: 10px;
-  width: 280px;
-}
-
-.feature-title h3 {
-  margin-top: 0px;
-  margin-bottom: 5px;
-}
-.feature-title h3 a {
-  text-decoration: none;
-}
-
-.feature-date {
-  font-size: 90%;
-  color: grey;
-}
-.feature-location {
-  font-size: 90%;
-  color: grey;
-}
-.feature-source {
-  font-size: 90%;
-  color: grey;
-}
-
-.clicked-coord-label{
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  background: white;
-  border-radius: 5px;
-}
-
-.clicked-coord-label p {
-  margin: 10px;
 }

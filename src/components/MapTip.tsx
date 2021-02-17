@@ -2,6 +2,8 @@ import React from 'react';
 
 import Feature from 'ol/Feature';
 
+import '../style/MapTip.css';
+
 interface IFeatureProperties {
   id: string;
   title: string;
@@ -20,6 +22,7 @@ interface IMapTipProps {
   features: Array<Feature>;
 }
 
+
 const MapTip: React.FC<IMapTipProps> = (props) => {
 
   const featuresHTML = (features: Array<Feature>): JSX.Element | null => {
@@ -36,7 +39,10 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
     const dateStr = date.toDateString();
 
     return (
-      <div className="selected-features">
+      <div className="MapTip">
+        <div className="feature-date">
+          {dateStr}
+        </div>
         <div className="feature-title">
           <h3>
             <a
@@ -45,9 +51,6 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
               {featureProperties['title']}
             </a>
           </h3>
-        </div>
-        <div className="feature-date">
-          {dateStr}
         </div>
         <div className="feature-location">
           {featureProperties['location']}
