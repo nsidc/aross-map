@@ -24,7 +24,7 @@ const LEO_NETWORK_URL: string = (
 
 
 const App: React.FC = () => {
-  const [ selectedBasemap, setSelectedBasemap ] = useState<Basemap>('USGSImageryTopo');
+  const [ selectedBasemap, setSelectedBasemap ] = useState<Basemap>('USGSTopo');
   const [ features, setFeatures ] = useState<Feature[]>([])
 
   // Fetch features from LEO on app initialization.
