@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type {RefObject} from 'react';
 
+import 'ol/ol.css';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map'
 import Overlay from 'ol/Overlay';
@@ -103,10 +104,6 @@ const useMapInit = (
       overlays: [
         initialFeatureInfoOverlay,
       ],
-      // Hide the default controls for a less cluttery experience.
-      // Zoom in and out with pinch or scroll, and pan with click and drag or
-      // touch and drag.
-      controls: [],
     })
 
     initialMap.on('click', clickHandler);
