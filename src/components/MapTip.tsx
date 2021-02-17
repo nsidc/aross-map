@@ -58,7 +58,8 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
         <div className="feature-source">
           Source: {featureProperties['source']}
         </div>
-        <a href={featureProperties['url']}>
+        <a href={featureProperties['url']}
+           target={'_blank'} rel={'noreferrer'}>
           {'Read more...'}
         </a>
       </div>
