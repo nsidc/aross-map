@@ -173,7 +173,7 @@ const useFeatures = (
   useEffect(() => {
     if (
       map === undefined
-      || selectInteraction == undefined
+      || selectInteraction === undefined
       || featuresLayer === undefined
       || features === undefined
       || features.length === 0
@@ -190,7 +190,7 @@ const useFeatures = (
 
     // Select the latest feature and zoom to it.
     const selected = selectInteraction.getFeatures();
-    const latestFeature = getLatestFeatureFromLayer(featuresLayer);
+    const latestFeature: Feature = getLatestFeatureFromLayer(featuresLayer);
 
     selected.clear();
     // Adds the selected feature to the collection. This is really the
