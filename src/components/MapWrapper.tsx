@@ -9,6 +9,7 @@ import Map from 'ol/Map'
 import Overlay from 'ol/Overlay';
 import View from 'ol/View'
 import Select, {SelectEvent} from 'ol/interaction/Select';
+import * as style from 'ol/style';
 import TileLayer from 'ol/layer/Tile'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
@@ -64,6 +65,19 @@ const useMapInit = (
       // @ts-ignore: TS2304
       id: 'features',
       source: new VectorSource(),
+      opacity: 1,
+      style: new style.Style({
+        image: new style.Circle({
+          radius: 4,
+          stroke: new style.Stroke({
+            color: '#D04721',
+            width: 3,
+          }),
+          fill: new style.Fill({
+            color: '#FAECE8',
+          }),
+        }),
+      }),
     })
     const initialBasemapLayer = new TileLayer({
       // @ts-ignore: TS2304
@@ -99,7 +113,21 @@ const useMapInit = (
     // We have to add the interaction after instantiating `initialMap` because
     // we want to take advantage of the default interactions (click-and-drag to
     // pan, etc.)
-    const selectInteraction = new Select({condition: click})
+    const selectInteraction = new Select({
+      condition: click,
+      style: new style.Style({
+        image: new style.Circle({
+          radius: 8,
+          stroke: new style.Stroke({
+            color: '#D04721',
+            width: 3,
+          }),
+          fill: new style.Fill({
+            color: '#E37557',
+          }),
+        }),
+      }),
+    });
     selectInteraction.on('select', selectHandler);
     initialMap.addInteraction(selectInteraction);
 
