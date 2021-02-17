@@ -15,6 +15,7 @@ export const BASEMAP_CHOICES = [
 ] as const;
 export type Basemap = typeof BASEMAP_CHOICES[number];
 
+// TODO: Consider: Optional<T> = T | undefined
 export type OptionalMap = Map | undefined;
 export type OptionalVectorLayer = VectorLayer | undefined
 export type OptionalTileLayer = TileLayer | undefined
