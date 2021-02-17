@@ -5,8 +5,6 @@
   "dependencies": {
     "@fontsource/roboto": "^4.2.1",
     "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.7.0",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.26",
     "@types/ol": "^6.4.2",
@@ -19,6 +17,8 @@
     "web-vitals": "^1.1.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.7.1",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "eslint": "^7.19.0",
