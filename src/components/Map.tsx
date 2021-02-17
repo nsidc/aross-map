@@ -70,7 +70,7 @@ const useMapInit = (
       opacity: 1,
       style: new style.Style({
         image: new style.Circle({
-          radius: 4,
+          radius: 8,
           stroke: new style.Stroke({
             color: '#D04721',
             width: 3,
@@ -115,10 +115,10 @@ const useMapInit = (
       condition: click,
       style: new style.Style({
         image: new style.Circle({
-          radius: 8,
+          radius: 16,
           stroke: new style.Stroke({
             color: '#D04721',
-            width: 3,
+            width: 8,
           }),
           fill: new style.Fill({
             color: '#E37557',
