@@ -175,7 +175,10 @@ const useFeatures = (
     }
 
     featuresLayer.setSource(
-      new VectorSource({features})
+      new VectorSource({
+        features,
+        wrapX: false,
+      }),
     )
 
     map.getView().fit(
