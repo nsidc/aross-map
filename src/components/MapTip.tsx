@@ -40,6 +40,9 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
 
     return (
       <div className="MapTip">
+        <div className="feature-date">
+          {dateStr}
+        </div>
         <div className="feature-title">
           <h3>
             <a
@@ -48,9 +51,6 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
               {featureProperties['title']}
             </a>
           </h3>
-        </div>
-        <div className="feature-date">
-          {dateStr}
         </div>
         <div className="feature-location">
           {featureProperties['location']}
