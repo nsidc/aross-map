@@ -45,7 +45,9 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
       <div className="MapTip">
 
         <div className="feature-title">
-          <img key={Date.now()} src={featureProperties['thumbnail']} />
+          <div className='feature-thumbnail'>
+            <img key={Date.now()} src={featureProperties['thumbnail']} />
+          </div>
 
           <div className="feature-date">
             {dateStr}
