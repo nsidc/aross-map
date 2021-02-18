@@ -31,9 +31,14 @@
   text-decoration: none;
 }
 .feature-title img {
+  height: 100px;
+  width: 100px;
+}
+.feature-thumbnail {
   float: right;
   height: 100px;
   width: 100px;
+  background-color: #8a8587;
 }
 
 .feature-location {
