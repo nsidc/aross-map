@@ -5,6 +5,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
+COPY src ./src
+COPY public ./public
+
 # Allow optional bypass of production build in case the user is only running
 # webpack-dev-server.
 ARG env="production"
@@ -19,8 +22,6 @@ fi
 
 # Intentionally avoid copying node_modules; that would overwrite what we just
 # installed.
-COPY src ./src
-COPY public ./public
 COPY tsconfig.json .eslintrc.js ./
 EXPOSE 3000
 
