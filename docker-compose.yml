@@ -4,9 +4,6 @@ services:
   webapp:
     build: .
     image: nsidc/aross-map:dev
-    ports:
-      - 80:80
-      - 443:443
     logging:
       options:
         max-size: "10m"
