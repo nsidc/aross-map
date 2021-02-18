@@ -30,6 +30,11 @@
 .feature-title h3 a {
   text-decoration: none;
 }
+.feature-title img {
+  float: right;
+  height: 100px;
+  width: 100px;
+}
 
 .feature-location {
   font-size: 90%;

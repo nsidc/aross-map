@@ -38,12 +38,19 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
     const date = new Date(featureProperties['date']);
     const dateStr = date.toDateString();
 
+    // NOTE: The key on the `img` tag prevents the browser from re-using the
+    // last image while waiting for the next image to load. There must be a
+    // better way.
     return (
       <div className="MapTip">
-        <div className="feature-date">
-          {dateStr}
-        </div>
+
         <div className="feature-title">
+          <img key={Date.now()} src={featureProperties['thumbnail']} />
+
+          <div className="feature-date">
+            {dateStr}
+          </div>
+
           <h3>
             <a
               href={featureProperties['url']}
@@ -52,19 +59,24 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
             </a>
           </h3>
         </div>
+
         <div className="feature-location">
           {featureProperties['location']}
         </div>
+
         <div className="feature-description">
           <p>{featureProperties['description']}</p>
         </div>
+
         <div className="feature-source">
           Source: {featureProperties['source']}
         </div>
+
         <a href={featureProperties['url']}
            target={'_blank'} rel={'noreferrer'}>
           {'Read more...'}
         </a>
+
       </div>
     );
   };
