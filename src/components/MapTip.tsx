@@ -39,7 +39,8 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
     const dateStr = date.toDateString();
 
     // NOTE: The key on the `img` tag prevents the browser from re-using the
-    // last image after the component re-renders. There must be a better way.
+    // last image while waiting for the next image to load. There must be a
+    // better way.
     return (
       <div className="MapTip">
 
