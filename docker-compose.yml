@@ -1,14 +1,13 @@
-version: '3'
+version: '3.4'
 
 services:
   webapp:
     build: .
     image: nsidc/aross-map:dev
-    # Useful to skip linting errors and expose compiler errors:
-    # command: 'npm run start:nolint'
     ports:
-      - 80:3000
-    volumes:
-      - ./src:/app/src:ro
-      - ./public:/app/public:ro
-      - ./.eslintrc.js:/app/.eslintrc.js:ro
+      - 80:80
+      - 443:443
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
