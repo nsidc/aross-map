@@ -1,0 +1,43 @@
+#!/bin/bash
+set -e
+
+# Interface for programmatic deployment. It's expected that the deployment
+# program will freshly clone this repository on a deployment target, then
+# checkout an vX.Y.Z tag, then run this script with an environment as 1st
+# positional argument. The "latest" build will be used in every environment
+# except production and staging.
+
+ENVIRONMENT="$1"
+
+THISDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+COMPOSE_FILE="$THISDIR/../docker-compose.yml"
+
+if [ "${ENVIRONMENT}" = "dev" ]; then
+    OVERRIDE_FILE="$THISDIR/../docker-compose.dev.yml"
+else
+    OVERRIDE_FILE="$THISDIR/../docker-compose.live.yml"
+fi
+
+
+if [ "${ENVIRONMENT}" = "production" ] || [ "$ENVIRONMENT" = "staging" ]; then
+    # Make sure this is a reasonable production deploy request before
+    # deploying. This is kind of hacky.
+    # TODO: Extract this to a script? ¯\_(ツ)_/¯
+    TAGS=$(git tag --points-at HEAD)
+    NTAGS=$(echo "$TAGS" | wc -w)
+    if (( NTAGS != 1 )); then
+        echo "Expected 1 tag on this commit, found $NTAGS: $TAGS"
+        exit 1
+    fi
+
+    export APP_VERSION="$TAGS"
+else
+    export APP_VERSION="latest"
+fi
+
+echo "Attempting to deploy version $APP_VERSION from DockerHub..."
+echo "docker-compose -f $COMPOSE_FILE -f $OVERRIDE_FILE up -d"
+# docker-compose \
+#     -f $COMPOSE_FILE \
+#     -f $OVERRIDE_FILE \
+#     up -d
