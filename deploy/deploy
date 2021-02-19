@@ -39,4 +39,8 @@ echo "Attempting to deploy version $APP_VERSION from DockerHub..."
 docker-compose \
     -f $COMPOSE_FILE \
     -f $OVERRIDE_FILE \
+    down
+docker-compose \
+    -f $COMPOSE_FILE \
+    -f $OVERRIDE_FILE \
     up -d
