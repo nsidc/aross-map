@@ -36,8 +36,7 @@ else
 fi
 
 echo "Attempting to deploy version $APP_VERSION from DockerHub..."
-echo "docker-compose -f $COMPOSE_FILE -f $OVERRIDE_FILE up -d"
-# docker-compose \
-#     -f $COMPOSE_FILE \
-#     -f $OVERRIDE_FILE \
-#     up -d
+docker-compose \
+    -f $COMPOSE_FILE \
+    -f $OVERRIDE_FILE \
+    up -d
