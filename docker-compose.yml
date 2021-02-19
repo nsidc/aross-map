@@ -1,3 +1,5 @@
+# WARNING: This compose file alone will not yield a working stack. It's
+# intended for use with an override (included).
 version: '3.4'
 
 services:
