@@ -37,7 +37,7 @@ jobs:
 
             if [[ "${CIRCLE_TAG}" ]]; then
               TAG=${CIRCLE_TAG}
-            elif [[ "${CIRCLE_BRANCH}" = "master" ]]; then
+            elif [[ "${CIRCLE_BRANCH}" = "main" ]]; then
               TAG="latest"
             else
               # We don't really want images named after tags cluttering up our
@@ -72,6 +72,6 @@ workflows:
             - test
           filters:
             branches:
-              ignore: /.*/
+              only: main
             tags:
               only: /^v[0-9]+(\.[0-9]+)*(\.[\-a-zA-Z0-9]+)?$/
