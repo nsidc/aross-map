@@ -28,3 +28,13 @@ FROM nginx:1.19-alpine AS server
 
 WORKDIR /usr/share/nginx/html
 COPY --from=builder /app/build .
+
+# Make a self-signed SSL certificate
+RUN mkdir /cert
+COPY ./nginx/openssl.conf .
+RUN apk add openssl
+RUN openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -config openssl.conf \
+    -keyout /cert/ssl.key -out /cert/ssl.crt
+
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
