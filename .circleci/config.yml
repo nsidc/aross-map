@@ -26,7 +26,12 @@ jobs:
       - image: docker:20.10.3-git
     steps:
       - checkout
-      - setup_remote_docker
+      # `setup_remote_docker` defaults to 17.09.0 which doesn't work with the
+      # node image we're trying to build...
+      #   https://support.circleci.com/hc/en-us/articles/360050934711
+      #   https://discuss.circleci.com/t/docker-build-fails-with-nonsensical-eperm-operation-not-permitted-copyfile/37364
+      - setup_remote_docker:
+          version: 20.10.2
       - run:
           name: Build and push Docker image
           command: |
