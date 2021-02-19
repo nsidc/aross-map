@@ -15,7 +15,7 @@ COPY tsconfig.json .eslintrc.js ./
 # webpack-dev-server.
 ARG env="production"
 RUN if [ "$env" = "production" ]; then \
-  mkdir build && npm run build; \
+  npm run build; \
 fi
 
 # These lines are only required in case a developer wants to use this stage of
