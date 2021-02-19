@@ -1,11 +1,10 @@
-# WARNING: This compose file alone will not yield a working stack. It's
+# WARNING: This compose file alone will not yield a working stack. It is
 # intended for use with an override (included).
 version: '3.4'
 
 services:
   webapp:
-    build: .
-    image: nsidc/aross-map:dev
+    image: nsidc/aross-map:${APP_VERSION:-latest}
     logging:
       options:
         max-size: "10m"
