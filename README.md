@@ -17,6 +17,12 @@ hot-reloading. Because the source code is volume-mounted, you can edit the
 source code on the host and see changes reflected in the server run by Docker.
 
 ```
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
+
+Alternatively:
+```
+ln -s docker-compose.dev.yml docker-compose.override.yml
 docker-compose up --build
 ```
 
@@ -47,9 +53,25 @@ Manually triggers ESLint static analysis with type-aware linting thanks to the
 Builds the app for production to the `build` folder. It correctly bundles
 React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.  Your app is ready
+The build is minified and the filenames include the hashes. Your app is ready
 to be deployed!
 
 See the section about
 [deployment](https://facebook.github.io/create-react-app/docs/deployment) for
 more information.
+
+
+## Deployment
+
+The app can be deployed with:
+
+```
+docker-compose -f docker-compose.yml -f docker-compose.live.yml up --build -d
+```
+
+Alternatively:
+
+```
+ln -s docker-compose.live.yml docker-compose.override.yml
+docker-compose up --build -d
+```
