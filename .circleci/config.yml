@@ -35,7 +35,7 @@ jobs:
             echo "\$CIRCLE_TAG: ${CIRCLE_TAG}"
             echo "\$CIRCLE_BRANCH: ${CIRCLE_BRANCH}"
 
-						if [[ "${CIRCLE_TAG}" ]]; then
+            if [[ "${CIRCLE_TAG}" ]]; then
               TAG=${CIRCLE_TAG}
             elif [[ "${CIRCLE_BRANCH}" = "master" ]]; then
               TAG="latest"
@@ -50,7 +50,7 @@ jobs:
 
 
             DOCKER_IMAGE="${IMAGE_NAME}:${TAG}"
-				    docker build -t ${DOCKER_IMAGE} .
+            docker build -t ${DOCKER_IMAGE} .
             echo "Built: ${DOCKER_IMAGE}"
 
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
