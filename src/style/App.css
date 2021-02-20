@@ -7,10 +7,14 @@
   color: #051729;
 }
 
-.select-map{
+.select-map {
   position: absolute;
   left: 0;
   bottom: 0;
   background: white;
   border-radius: 5px;
+}
+
+#version {
+  display: none;
 }

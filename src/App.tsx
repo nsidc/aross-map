@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import GeoJSON from 'ol/format/GeoJSON'
 import Feature from 'ol/Feature';
 
+import {version} from '../package.json';
 import './style/App.css';
 import Map from './components/Map';
 import BasemapSelector from './components/BasemapSelector';
@@ -48,6 +49,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
+      <div id="version">v{version}</div>
 
       <Map
         features={features}
@@ -56,6 +58,7 @@ const App: React.FC = () => {
       <BasemapSelector
         selectedBasemap={selectedBasemap}
         onChange={setSelectedBasemap} />
+
 
     </div>
   );
