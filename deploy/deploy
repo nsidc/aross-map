@@ -1,11 +1,14 @@
 #!/bin/bash
 set -e
 
-# Interface for programmatic deployment. It's expected that the deployment
-# program will freshly clone this repository on a deployment target, then
-# checkout an vX.Y.Z tag, then run this script with an environment as 1st
-# positional argument. The "latest" build will be used in every environment
-# except production and staging.
+# WARNING: This script is not tested for your infrastructure. Use it at your
+# own risk.
+
+# Interface for programmatic deployment (not the cool kind with an orchestrator
+# and stuff). It's expected that the deployment program will freshly clone this
+# repository on a deployment target, then checkout an vX.Y.Z tag, then run this
+# script with an environment as 1st positional argument. The "latest" build
+# will be used in every environment except production and staging.
 
 ENVIRONMENT="$1"
 

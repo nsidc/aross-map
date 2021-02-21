@@ -75,3 +75,6 @@ Alternatively:
 ln -s docker-compose.live.yml docker-compose.override.yml
 docker-compose up --build -d
 ```
+
+WARNING:The script at `deploy/deploy` is not tested for your infrastructure.
+Use it at your own risk!
