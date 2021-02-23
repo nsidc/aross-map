@@ -36,7 +36,7 @@ import { StateSetter } from '../types/misc';
 import { getLatestFeatureFromLayer } from '../util/features';
 
 
-const sourceDefaults = {
+const basemapSourceDefaults = {
   maxZoom: 16,
 }
 
@@ -89,7 +89,7 @@ const useMapInit = (
       // @ts-ignore: TS2304
       id: 'basemap',
       source: new XYZ({
-        ...sourceDefaults,
+        ...basemapSourceDefaults,
         url: getBasemapUrl(selectedBasemap),
       })
     })
@@ -163,7 +163,7 @@ const useSelectedBasemap = (
     }
 
     basemapLayer.setSource(new XYZ({
-      ...sourceDefaults,
+      ...basemapSourceDefaults,
       url: getBasemapUrl(selectedBasemap),
     }));
   }, [selectedBasemap, basemapLayer, map]);
