@@ -207,10 +207,7 @@ const useFeatures = (
     });
 
     map.getView().fit(
-      // @ts-ignore TS2345
-      // Typescript expects a SimpleGeometry, but this is a Geometry. What's
-      // the difference? Geometry works fine.
-      latestFeature.getGeometry(),
+      featuresLayer.getSource().getExtent(),
       {padding: [100, 100, 100, 100]}
     )
 
