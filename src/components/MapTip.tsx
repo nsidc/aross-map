@@ -20,6 +20,7 @@ interface IFeatureProperties {
 
 interface IMapTipProps {
   features: Array<Feature>;
+  onClose: () => void;
 }
 
 
@@ -44,6 +45,7 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
     return (
       <div className="MapTip">
 
+        <div onClick={props.onClose}>Close</div>
         <div className="feature-title">
           <div className='feature-thumbnail'>
             <img
