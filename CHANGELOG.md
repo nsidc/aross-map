@@ -1,3 +1,8 @@
+# v0.2.0 (Unreleased)
+
+* Set initial view to fit all points.
+
+
 # v0.1.1 (2021-02-22)
 
 Fix restart policy for live container configuration.
