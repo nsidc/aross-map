@@ -37,7 +37,7 @@ import { getLatestFeatureFromLayer } from '../util/features';
 
 
 const basemapSourceDefaults = {
-  maxZoom: 16,
+  maxZoom: 8,
 }
 
 const getBasemapUrl = (basemap: Basemap): string => {
