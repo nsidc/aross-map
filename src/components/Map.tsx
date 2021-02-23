@@ -16,6 +16,7 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import {click} from 'ol/events/condition';
+import {FullScreen, defaults as defaultControls} from 'ol/control';
 import {transform} from 'ol/proj'
 import {toStringXY} from 'ol/coordinate';
 import type MapBrowserEvent from 'ol/MapBrowserEvent';
@@ -108,6 +109,8 @@ const useMapInit = (
       overlays: [
         initialFeatureInfoOverlay,
       ],
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      controls: defaultControls().extend([new FullScreen()]),
     })
 
     initialMap.on('click', clickHandler);
