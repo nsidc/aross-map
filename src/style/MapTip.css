@@ -30,7 +30,7 @@
 .feature-title h3 a {
   text-decoration: none;
 }
-.feature-title img {
+.feature-thumbnail img {
   height: 100px;
   width: 100px;
 }
@@ -38,7 +38,9 @@
   float: right;
   height: 100px;
   width: 100px;
+
   background-color: #8a8587;
+  color: #8a8587;
 }
 
 .feature-location {

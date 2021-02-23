@@ -16,6 +16,7 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import {click} from 'ol/events/condition';
+import {FullScreen, defaults as defaultControls} from 'ol/control';
 import {transform} from 'ol/proj'
 import {toStringXY} from 'ol/coordinate';
 import type MapBrowserEvent from 'ol/MapBrowserEvent';
@@ -35,9 +36,8 @@ import { StateSetter } from '../types/misc';
 import { getLatestFeatureFromLayer } from '../util/features';
 
 
-interface IMapProps {
-  features: Array<Feature>;
-  selectedBasemap: Basemap;
+const basemapSourceDefaults = {
+  maxZoom: 8,
 }
 
 const getBasemapUrl = (basemap: Basemap): string => {
@@ -89,6 +89,7 @@ const useMapInit = (
       // @ts-ignore: TS2304
       id: 'basemap',
       source: new XYZ({
+        ...basemapSourceDefaults,
         url: getBasemapUrl(selectedBasemap),
       })
     })
@@ -103,11 +104,13 @@ const useMapInit = (
         projection: 'EPSG:3857',
         center: [0, 0],
         zoom: 2,
-        maxZoom: 8,
+        maxZoom: 16,
       }),
       overlays: [
         initialFeatureInfoOverlay,
       ],
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      controls: defaultControls().extend([new FullScreen()]),
     })
 
     initialMap.on('click', clickHandler);
@@ -159,7 +162,10 @@ const useSelectedBasemap = (
       return;
     }
 
-    basemapLayer.setSource(new XYZ({url: getBasemapUrl(selectedBasemap)}))
+    basemapLayer.setSource(new XYZ({
+      ...basemapSourceDefaults,
+      url: getBasemapUrl(selectedBasemap),
+    }));
   }, [selectedBasemap, basemapLayer, map]);
 }
 
@@ -207,10 +213,7 @@ const useFeatures = (
     });
 
     map.getView().fit(
-      // @ts-ignore TS2345
-      // Typescript expects a SimpleGeometry, but this is a Geometry. What's
-      // the difference? Geometry works fine.
-      latestFeature.getGeometry(),
+      featuresLayer.getSource().getExtent(),
       {padding: [100, 100, 100, 100]}
     )
 
@@ -234,6 +237,11 @@ const useSelectedFeature = (
   // this dangerous?
   const pos = selectedFeatures[0].getGeometry()!.flatCoordinates as Array<float>;
   featureInfoOverlay.setPosition(pos);
+}
+
+interface IMapProps {
+  features: Array<Feature>;
+  selectedBasemap: Basemap;
 }
 
 const MapComponent: React.FC<IMapProps> = (props) => {
