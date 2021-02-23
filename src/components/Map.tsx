@@ -36,9 +36,8 @@ import { StateSetter } from '../types/misc';
 import { getLatestFeatureFromLayer } from '../util/features';
 
 
-interface IMapProps {
-  features: Array<Feature>;
-  selectedBasemap: Basemap;
+const sourceDefaults = {
+  maxZoom: 16,
 }
 
 const getBasemapUrl = (basemap: Basemap): string => {
@@ -90,6 +89,7 @@ const useMapInit = (
       // @ts-ignore: TS2304
       id: 'basemap',
       source: new XYZ({
+        ...sourceDefaults,
         url: getBasemapUrl(selectedBasemap),
       })
     })
@@ -104,7 +104,7 @@ const useMapInit = (
         projection: 'EPSG:3857',
         center: [0, 0],
         zoom: 2,
-        maxZoom: 8,
+        maxZoom: 16,
       }),
       overlays: [
         initialFeatureInfoOverlay,
@@ -162,7 +162,10 @@ const useSelectedBasemap = (
       return;
     }
 
-    basemapLayer.setSource(new XYZ({url: getBasemapUrl(selectedBasemap)}))
+    basemapLayer.setSource(new XYZ({
+      ...sourceDefaults,
+      url: getBasemapUrl(selectedBasemap),
+    }));
   }, [selectedBasemap, basemapLayer, map]);
 }
 
@@ -234,6 +237,11 @@ const useSelectedFeature = (
   // this dangerous?
   const pos = selectedFeatures[0].getGeometry()!.flatCoordinates as Array<float>;
   featureInfoOverlay.setPosition(pos);
+}
+
+interface IMapProps {
+  features: Array<Feature>;
+  selectedBasemap: Basemap;
 }
 
 const MapComponent: React.FC<IMapProps> = (props) => {
