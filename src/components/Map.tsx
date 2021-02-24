@@ -224,19 +224,29 @@ const useFeatures = (
 const useSelectedFeature = (
   featureInfoOverlay: OptionalOverlay,
   selectedFeatures: Array<Feature>,
+  selectInteraction: OptionalSelect,
 ): void => {
-  if (
-    featureInfoOverlay === undefined
-    || selectedFeatures.length === 0
-  ) {
-    return;
-  }
+  useEffect(() => {
+    if (
+      featureInfoOverlay === undefined
+      || selectInteraction === undefined
+    ) {
+      return;
+    }
+    if (selectedFeatures.length === 0) {
+      // @ts-ignore: TS2339
+      // .clear is not documented, but is present on the Collection object.
+      // Danger?
+      selectInteraction.getFeatures().clear();
+      return;
+    }
 
-  // @ts-ignore TS2339
-  // flatCoordinates is not documented, but is present on the object. Why? Is
-  // this dangerous?
-  const pos = selectedFeatures[0].getGeometry()!.flatCoordinates as Array<float>;
-  featureInfoOverlay.setPosition(pos);
+    // @ts-ignore TS2339
+    // .flatCoordinates is not documented, but is present on the object.
+    // Danger?
+    const pos = selectedFeatures[0].getGeometry()!.flatCoordinates as Array<float>;
+    featureInfoOverlay.setPosition(pos);
+  }, [selectedFeatures, selectInteraction]);
 }
 
 interface IMapProps {
@@ -267,6 +277,10 @@ const MapComponent: React.FC<IMapProps> = (props) => {
 
   const handleFeatureSelect = (event: SelectEvent) => {
     setSelectedFeatures(event.selected);
+  }
+
+  const handleMapTipClose = () => {
+    setSelectedFeatures([]);
   }
 
   const handleMapClick = (event: MapBrowserEvent) => {
@@ -309,6 +323,7 @@ const MapComponent: React.FC<IMapProps> = (props) => {
   useSelectedFeature(
     featureInfoOverlay,
     selectedFeatures,
+    selectInteraction,
   );
 
   mapRef.current = map || null;
@@ -320,7 +335,9 @@ const MapComponent: React.FC<IMapProps> = (props) => {
       <div ref={mapElement} className="map-container"></div>
 
       <div ref={overlayElement}>
-        <MapTip features={selectedFeatures} />
+        <MapTip
+          features={selectedFeatures}
+          onClose={handleMapTipClose} />
       </div>
 
       <div className="clicked-coord-label">

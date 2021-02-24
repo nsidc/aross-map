@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Feature from 'ol/Feature';
+import {MdClose} from 'react-icons/md';
 
 import '../style/MapTip.css';
 
@@ -20,6 +21,7 @@ interface IFeatureProperties {
 
 interface IMapTipProps {
   features: Array<Feature>;
+  onClose: () => void;
 }
 
 
@@ -43,45 +45,50 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
     // better way.
     return (
       <div className="MapTip">
+        <div className="content">
 
-        <div className="feature-title">
-          <div className='feature-thumbnail'>
-            <img
-              alt={'thumbnail'}
-              key={Date.now()}
-              src={featureProperties['thumbnail']} />
+          <div className="close-button"  onClick={props.onClose}>
+            <MdClose />
+          </div>
+          <div className="feature-title">
+            <div className='feature-thumbnail'>
+              <img
+                alt={'thumbnail'}
+                key={Date.now()}
+                src={featureProperties['thumbnail']} />
+            </div>
+
+            <div className="feature-date">
+              {dateStr}
+            </div>
+
+            <h3>
+              <a
+                href={featureProperties['url']}
+                target={'_blank'} rel={'noreferrer'}>
+                {featureProperties['title']}
+              </a>
+            </h3>
           </div>
 
-          <div className="feature-date">
-            {dateStr}
+          <div className="feature-location">
+            {featureProperties['location']}
           </div>
 
-          <h3>
-            <a
-              href={featureProperties['url']}
-              target={'_blank'} rel={'noreferrer'}>
-              {featureProperties['title']}
-            </a>
-          </h3>
+          <div className="feature-description">
+            <p>{featureProperties['description']}</p>
+          </div>
+
+          <div className="feature-source">
+            Source: {featureProperties['source']}
+          </div>
+
+          <a href={featureProperties['url']}
+             target={'_blank'} rel={'noreferrer'}>
+            {'Read more...'}
+          </a>
+
         </div>
-
-        <div className="feature-location">
-          {featureProperties['location']}
-        </div>
-
-        <div className="feature-description">
-          <p>{featureProperties['description']}</p>
-        </div>
-
-        <div className="feature-source">
-          Source: {featureProperties['source']}
-        </div>
-
-        <a href={featureProperties['url']}
-           target={'_blank'} rel={'noreferrer'}>
-          {'Read more...'}
-        </a>
-
       </div>
     );
   };
