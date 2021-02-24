@@ -16,6 +16,8 @@ export const getLatestFeatureFromLayer = (
   });
 }
 
+// TODO: Avoid sorting every time we seek through features. Will become a
+// problem with increased number of features.
 export const featureSeek = (
   featuresLayer: VectorLayer,
   selectedFeatures: Array<Feature>,
