@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Feature from 'ol/Feature';
-import {MdClose} from 'react-icons/md';
+import {MdClose, MdLaunch} from 'react-icons/md';
 
 import '../style/MapTip.css';
 
@@ -62,13 +62,7 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
               {dateStr}
             </div>
 
-            <h3>
-              <a
-                href={featureProperties['url']}
-                target={'_blank'} rel={'noreferrer'}>
-                {featureProperties['title']}
-              </a>
-            </h3>
+            <h3>{featureProperties['title']}</h3>
           </div>
 
           <div className="feature-location">
@@ -85,7 +79,7 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
 
           <a href={featureProperties['url']}
              target={'_blank'} rel={'noreferrer'}>
-            {'Read more...'}
+            {'Read more at LEO Network'}<MdLaunch />
           </a>
 
         </div>
