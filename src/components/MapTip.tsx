@@ -1,9 +1,13 @@
 import React from 'react';
 
 import Feature from 'ol/Feature';
-import {MdClose, MdLaunch} from 'react-icons/md';
+import {
+  MdClose,
+  MdLaunch,
+} from 'react-icons/md';
 
 import '../style/MapTip.css';
+import FeatureNavigation from './FeatureNavigation';
 
 interface IFeatureProperties {
   id: string;
@@ -81,6 +85,10 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
              target={'_blank'} rel={'noreferrer'}>
             {'Read more at LEO Network'}<MdLaunch />
           </a>
+
+          <FeatureNavigation
+            onPrevious={() => { alert('prev'); }}
+            onNext={() => { alert('next'); }} />
 
         </div>
       </div>
