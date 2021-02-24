@@ -8,12 +8,23 @@
   border-radius: 10px 0px 10px 10px;
 
   background: white;
-  padding: 28px;
-  text-align: left;
 }
 
 .MapTip a, .MapTip a:active {
   color: #003366;
+}
+
+.MapTip .content {
+  position: relative;
+  padding: 28px;
+  text-align: left;
+}
+
+.MapTip .close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
 }
 
 .feature-date {
