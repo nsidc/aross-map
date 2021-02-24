@@ -1,5 +1,6 @@
 import React from 'react';
 
+import '../style/BasemapSelector.css';
 import {
   BASEMAP_CHOICES,
   Basemap,
@@ -15,7 +16,7 @@ const BasemapSelector: React.FC<IBasemapSelectorProps> = (
 ) => {
 
   return (
-    <div className="select-map">
+    <div className="BasemapSelector">
       <select
         value={props.selectedBasemap}
         onChange={e => props.onChange(
