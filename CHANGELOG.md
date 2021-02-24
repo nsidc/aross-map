@@ -6,6 +6,7 @@
 * Allow viewport zoom to level 16.
 * Add "close" button to MapTips.
 * Add scale line.
+* Add Previous/Next buttons to seek through features.
 
 
 # v0.1.1 (2021-02-22)
