@@ -5,6 +5,7 @@
 * Limit background image tile requests to zoom level 8.
 * Allow viewport zoom to level 16.
 * Add "close" button to MapTips.
+* Add scale line.
 
 
 # v0.1.1 (2021-02-22)
