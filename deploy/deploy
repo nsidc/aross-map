@@ -47,4 +47,8 @@ docker rmi $(docker images 'nsidc/aross-map' -a -q)
 docker-compose \
     -f $COMPOSE_FILE \
     -f $OVERRIDE_FILE \
-    up -d --pull
+    pull
+docker-compose \
+    -f $COMPOSE_FILE \
+    -f $OVERRIDE_FILE \
+    up -d
