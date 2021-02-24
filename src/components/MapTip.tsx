@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Feature from 'ol/Feature';
+import {MdClose} from 'react-icons/md';
 
 import '../style/MapTip.css';
 
@@ -47,7 +48,7 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
         <div className="content">
 
           <div className="close-button"  onClick={props.onClose}>
-            {'X'}
+            <MdClose />
           </div>
           <div className="feature-title">
             <div className='feature-thumbnail'>
