@@ -87,9 +87,11 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
             {'Read more at LEO Network'}<MdLaunch />
           </a>
 
+          {/* Yes, this is backwards, but we're imitating the UX of
+              leonetwork.org. */}
           <FeatureNavigation
-            onPrevious={props.featureSeekCallbackFactory(-1)}
-            onNext={props.featureSeekCallbackFactory(1)} />
+            onPrevious={props.featureSeekCallbackFactory(1)}
+            onNext={props.featureSeekCallbackFactory(-1)} />
 
         </div>
       </div>
