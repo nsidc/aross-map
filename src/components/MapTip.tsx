@@ -25,6 +25,7 @@ interface IFeatureProperties {
 
 interface IMapTipProps {
   features: Array<Feature>;
+  featureSeekCallbackFactory: (increment: number) => (() => void);
   onClose: () => void;
 }
 
@@ -87,8 +88,8 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
           </a>
 
           <FeatureNavigation
-            onPrevious={() => { alert('prev'); }}
-            onNext={() => { alert('next'); }} />
+            onPrevious={props.featureSeekCallbackFactory(-1)}
+            onNext={props.featureSeekCallbackFactory(1)} />
 
         </div>
       </div>
