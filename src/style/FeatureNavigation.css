@@ -1,0 +1,13 @@
+.FeatureNavigation {
+  text-align: right;
+  padding-top: 15px;
+}
+
+.nav-button {
+  padding-left: 10px;
+  padding-right: 10px;
+  cursor: pointer;
+
+  color: #003366;
+  font-weight: 700;
+}

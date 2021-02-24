@@ -1,9 +1,13 @@
 import React from 'react';
 
 import Feature from 'ol/Feature';
-import {MdClose, MdLaunch} from 'react-icons/md';
+import {
+  MdClose,
+  MdLaunch,
+} from 'react-icons/md';
 
 import '../style/MapTip.css';
+import FeatureNavigation from './FeatureNavigation';
 
 interface IFeatureProperties {
   id: string;
@@ -21,6 +25,7 @@ interface IFeatureProperties {
 
 interface IMapTipProps {
   features: Array<Feature>;
+  featureSeekCallbackFactory: (increment: number) => (() => void);
   onClose: () => void;
 }
 
@@ -81,6 +86,12 @@ const MapTip: React.FC<IMapTipProps> = (props) => {
              target={'_blank'} rel={'noreferrer'}>
             {'Read more at LEO Network'}<MdLaunch />
           </a>
+
+          {/* Yes, this is backwards, but we're imitating the UX of
+              leonetwork.org. */}
+          <FeatureNavigation
+            onPrevious={props.featureSeekCallbackFactory(1)}
+            onNext={props.featureSeekCallbackFactory(-1)} />
 
         </div>
       </div>

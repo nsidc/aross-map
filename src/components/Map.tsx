@@ -37,7 +37,10 @@ import {
   OptionalVectorLayer,
 } from '../types/Map';
 import { StateSetter } from '../types/misc';
-import { getLatestFeatureFromLayer } from '../util/features';
+import {
+  featureSeek,
+  getLatestFeatureFromLayer
+} from '../util/features';
 
 
 const basemapSourceDefaults = {
@@ -291,7 +294,6 @@ const MapComponent: React.FC<IMapProps> = (props) => {
   }
 
   const handleMapClick = (event: MapBrowserEvent) => {
-
     if ( !mapRef || !mapRef.current ) {
       return;
     }
@@ -301,6 +303,24 @@ const MapComponent: React.FC<IMapProps> = (props) => {
     const transormedCoord = transform(clickedCoord, 'EPSG:3857', 'EPSG:4326')
 
     setSelectedCoord(transormedCoord);
+  }
+
+  // TODO: Reconsider if this is readable
+  const handleFeatureSeekFactory = (increment: number) => {
+    return () => {
+      if (
+        featuresLayer === undefined
+        || selectedFeatures.length === 0
+      ) {
+        return;
+      }
+      const feat = featureSeek(
+        featuresLayer,
+        selectedFeatures,
+        increment,
+      );
+      setSelectedFeatures([feat]);
+    }
   }
 
   // Register behaviors
@@ -344,6 +364,7 @@ const MapComponent: React.FC<IMapProps> = (props) => {
       <div ref={overlayElement}>
         <MapTip
           features={selectedFeatures}
+          featureSeekCallbackFactory={handleFeatureSeekFactory}
           onClose={handleMapTipClose} />
       </div>
 
