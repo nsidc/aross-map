@@ -54,17 +54,19 @@ export const featureSeek = (
 
 export const selectFeature = (
   selectInteraction: Select,
-  feature: Feature,
+  feature: Feature | null,
 ) => {
   const selected = selectInteraction.getFeatures();
   const oldSelected: Array<Feature> =  // Clone
     [...selected.getArray()];
 
   selected.clear();
-  // Adds the selected feature to the collection. This is really the
-  // prescribed way:
-  //   https://openlayers.org/en/latest/examples/box-selection.html
-  selected.push(feature);
+  if (feature) {
+    // Adds the selected feature to the collection. This is really the
+    // prescribed way:
+    //   https://openlayers.org/en/latest/examples/box-selection.html
+    selected.push(feature);
+  }
 
   // Manually dispatch an event. It's not clear why this didn't fire on push or
   // clear.
@@ -73,7 +75,7 @@ export const selectFeature = (
     // @ts-ignore TS2345
     // Typescript expects a BaseEvent. This isn't 100% match for a BaseEvent
     // or SelectEvent... How do?
-    selected: [feature],
+    selected: feature ? [feature] : [],
     deselected: oldSelected,
   });
 }

@@ -144,6 +144,15 @@ const useMapInit = (
         }),
       }),
     });
+
+    // TODO: Is this the right thing to do? Here, usual control flow is
+    // inverted, where instead of updating the map in response to a React state
+    // change (an Effect), we're updating React state in response to a map
+    // change. I think this is needed because we have to respond to user clicks
+    // on map objects. However, there are cases where we select things
+    // programmatically, and for that it would make more sense to update the
+    // React state and having the map respond in an Effect. But how would we
+    // tell the difference in _how_ the state was changed?
     initialSelectInteraction.on('select', selectHandler);
     initialMap.addInteraction(initialSelectInteraction);
 
@@ -278,8 +287,11 @@ const MapComponent: React.FC<IMapProps> = (props) => {
   }
 
   const handleMapTipClose = () => {
+    if (selectInteraction === undefined) {
+      return;
+    }
     // TODO: use selectInteraction to clear the features?
-    setSelectedFeatures([]);
+    selectFeature(selectInteraction, null);
   }
 
   const handleMapClick = (event: MapBrowserEvent) => {
