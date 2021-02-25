@@ -217,14 +217,14 @@ const useFeatures = (
     // Select the latest feature and zoom to it.
     const latestFeature: Feature = getLatestFeatureFromLayer(featuresLayer);
 
-    selectFeature(selectInteraction, latestFeature)
+    selectFeature(selectInteraction, latestFeature);
 
     map.getView().fit(
       featuresLayer.getSource().getExtent(),
       {padding: [100, 100, 100, 100]},
-    )
+    );
 
-  }, [features, featuresLayer, selectInteraction, map])
+  }, [features, featuresLayer, selectInteraction, map]);
 };
 
 // When a feature is selected, position the overlay appropriately.
@@ -232,10 +232,12 @@ const useSelectedFeature = (
   featureInfoOverlay: OptionalOverlay,
   selectedFeatures: Array<Feature>,
   selectInteraction: OptionalSelect,
+  map: OptionalMap,
 ): void => {
   useEffect(() => {
     if (
-      featureInfoOverlay === undefined
+      map === undefined
+      || featureInfoOverlay === undefined
       || selectInteraction === undefined
     ) {
       return;
@@ -253,7 +255,12 @@ const useSelectedFeature = (
     // Danger?
     const pos = selectedFeatures[0].getGeometry()!.flatCoordinates as Array<float>;
     featureInfoOverlay.setPosition(pos);
-  }, [selectedFeatures, selectInteraction]);
+
+    map.getView().animate({
+      center: pos,
+      duration: 1000,
+    });
+  }, [selectedFeatures, selectInteraction, map]);
 }
 
 interface IMapProps {
@@ -353,6 +360,7 @@ const MapComponent: React.FC<IMapProps> = (props) => {
     featureInfoOverlay,
     selectedFeatures,
     selectInteraction,
+    map,
   );
 
   mapRef.current = map || null;
