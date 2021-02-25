@@ -39,7 +39,8 @@ import {
 import { StateSetter } from '../types/misc';
 import {
   featureSeek,
-  getLatestFeatureFromLayer
+  getLatestFeatureFromLayer,
+  selectFeature,
 } from '../util/features';
 
 
@@ -205,26 +206,13 @@ const useFeatures = (
     )
 
     // Select the latest feature and zoom to it.
-    const selected = selectInteraction.getFeatures();
     const latestFeature: Feature = getLatestFeatureFromLayer(featuresLayer);
 
-    selected.clear();
-    // Adds the selected feature to the collection. This is really the
-    // prescribed way:
-    //   https://openlayers.org/en/latest/examples/box-selection.html
-    selected.push(latestFeature);
-    selectInteraction.dispatchEvent({
-      type: 'select',
-      // @ts-ignore TS2345
-      // Typescript expects a BaseEvent. This isn't 100% match for a BaseEvent
-      // or SelectEvent... How do?
-      selected: [latestFeature],
-      deselected: [],
-    });
+    selectFeature(selectInteraction, latestFeature)
 
     map.getView().fit(
       featuresLayer.getSource().getExtent(),
-      {padding: [100, 100, 100, 100]}
+      {padding: [100, 100, 100, 100]},
     )
 
   }, [features, featuresLayer, selectInteraction, map])
@@ -290,6 +278,7 @@ const MapComponent: React.FC<IMapProps> = (props) => {
   }
 
   const handleMapTipClose = () => {
+    // TODO: use selectInteraction to clear the features?
     setSelectedFeatures([]);
   }
 
@@ -310,6 +299,7 @@ const MapComponent: React.FC<IMapProps> = (props) => {
     return () => {
       if (
         featuresLayer === undefined
+        || selectInteraction === undefined
         || selectedFeatures.length === 0
       ) {
         return;
@@ -319,7 +309,7 @@ const MapComponent: React.FC<IMapProps> = (props) => {
         selectedFeatures,
         increment,
       );
-      setSelectedFeatures([feat]);
+      selectFeature(selectInteraction, feat);
     }
   }
 
