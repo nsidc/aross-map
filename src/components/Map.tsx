@@ -235,10 +235,12 @@ const useSelectedFeature = (
   featureInfoOverlay: OptionalOverlay,
   selectedFeatures: Array<Feature>,
   selectInteraction: OptionalSelect,
+  map: OptionalMap,
 ): void => {
   useEffect(() => {
     if (
-      featureInfoOverlay === undefined
+      map === undefined
+      || featureInfoOverlay === undefined
       || selectInteraction === undefined
     ) {
       return;
@@ -256,7 +258,9 @@ const useSelectedFeature = (
     // Danger?
     const pos = selectedFeatures[0].getGeometry()!.flatCoordinates as Array<float>;
     featureInfoOverlay.setPosition(pos);
-  }, [selectedFeatures, selectInteraction]);
+
+    map.getView().setCenter(pos);
+  }, [selectedFeatures, selectInteraction, map]);
 }
 
 interface IMapProps {
@@ -351,6 +355,7 @@ const MapComponent: React.FC<IMapProps> = (props) => {
     featureInfoOverlay,
     selectedFeatures,
     selectInteraction,
+    map,
   );
 
   mapRef.current = map || null;
