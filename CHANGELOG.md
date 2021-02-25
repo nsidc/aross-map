@@ -1,4 +1,4 @@
-# v0.2.0 (Unreleased)
+# v0.2.0 (2021-02-25)
 
 * Set initial view to fit all points.
 * Add FullScreen control in upper-right corner.
