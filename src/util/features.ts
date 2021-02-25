@@ -55,7 +55,7 @@ export const featureSeek = (
 export const selectFeature = (
   selectInteraction: Select,
   feature: Feature | null,
-) => {
+): void => {
   const selected = selectInteraction.getFeatures();
   const oldSelected: Array<Feature> =  // Clone
     [...selected.getArray()];
