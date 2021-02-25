@@ -217,14 +217,14 @@ const useFeatures = (
     // Select the latest feature and zoom to it.
     const latestFeature: Feature = getLatestFeatureFromLayer(featuresLayer);
 
-    selectFeature(selectInteraction, latestFeature)
+    selectFeature(selectInteraction, latestFeature);
 
     map.getView().fit(
       featuresLayer.getSource().getExtent(),
       {padding: [100, 100, 100, 100]},
-    )
+    );
 
-  }, [features, featuresLayer, selectInteraction, map])
+  }, [features, featuresLayer, selectInteraction, map]);
 };
 
 // When a feature is selected, position the overlay appropriately.
@@ -256,7 +256,10 @@ const useSelectedFeature = (
     const pos = selectedFeatures[0].getGeometry()!.flatCoordinates as Array<float>;
     featureInfoOverlay.setPosition(pos);
 
-    map.getView().setCenter(pos);
+    map.getView().animate({
+      center: pos,
+      duration: 1000,
+    });
   }, [selectedFeatures, selectInteraction, map]);
 }
 
