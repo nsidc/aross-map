@@ -39,7 +39,8 @@ import {
 import { StateSetter } from '../types/misc';
 import {
   featureSeek,
-  getLatestFeatureFromLayer
+  getLatestFeatureFromLayer,
+  selectFeature,
 } from '../util/features';
 
 
@@ -143,6 +144,15 @@ const useMapInit = (
         }),
       }),
     });
+
+    // TODO: Is this the right thing to do? Here, usual control flow is
+    // inverted, where instead of updating the map in response to a React state
+    // change (an Effect), we're updating React state in response to a map
+    // change. I think this is needed because we have to respond to user clicks
+    // on map objects. However, there are cases where we select things
+    // programmatically, and for that it would make more sense to update the
+    // React state and having the map respond in an Effect. But how would we
+    // tell the difference in _how_ the state was changed?
     initialSelectInteraction.on('select', selectHandler);
     initialMap.addInteraction(initialSelectInteraction);
 
@@ -205,26 +215,13 @@ const useFeatures = (
     )
 
     // Select the latest feature and zoom to it.
-    const selected = selectInteraction.getFeatures();
     const latestFeature: Feature = getLatestFeatureFromLayer(featuresLayer);
 
-    selected.clear();
-    // Adds the selected feature to the collection. This is really the
-    // prescribed way:
-    //   https://openlayers.org/en/latest/examples/box-selection.html
-    selected.push(latestFeature);
-    selectInteraction.dispatchEvent({
-      type: 'select',
-      // @ts-ignore TS2345
-      // Typescript expects a BaseEvent. This isn't 100% match for a BaseEvent
-      // or SelectEvent... How do?
-      selected: [latestFeature],
-      deselected: [],
-    });
+    selectFeature(selectInteraction, latestFeature)
 
     map.getView().fit(
       featuresLayer.getSource().getExtent(),
-      {padding: [100, 100, 100, 100]}
+      {padding: [100, 100, 100, 100]},
     )
 
   }, [features, featuresLayer, selectInteraction, map])
@@ -294,7 +291,11 @@ const MapComponent: React.FC<IMapProps> = (props) => {
   }
 
   const handleMapTipClose = () => {
-    setSelectedFeatures([]);
+    if (selectInteraction === undefined) {
+      return;
+    }
+    // TODO: use selectInteraction to clear the features?
+    selectFeature(selectInteraction, null);
   }
 
   const handleMapClick = (event: MapBrowserEvent) => {
@@ -314,6 +315,7 @@ const MapComponent: React.FC<IMapProps> = (props) => {
     return () => {
       if (
         featuresLayer === undefined
+        || selectInteraction === undefined
         || selectedFeatures.length === 0
       ) {
         return;
@@ -323,7 +325,7 @@ const MapComponent: React.FC<IMapProps> = (props) => {
         selectedFeatures,
         increment,
       );
-      setSelectedFeatures([feat]);
+      selectFeature(selectInteraction, feat);
     }
   }
 
